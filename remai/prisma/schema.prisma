@@ -1,0 +1,40 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model gduser {
+  id   String @id @default(auto()) @map("_id") @db.ObjectId
+  name String
+}
+
+model glb500_yr23 {
+  id                String @id @default(auto()) @map("_id") @db.ObjectId
+  country           String
+  enterprise        String
+  organizaition_frn String
+  profit            Float
+  rank              Int
+  revenue           Float
+}
+
+model student_gy23 {
+  id                  String @id @default(auto()) @map("_id") @db.ObjectId
+  degree              String
+  industry_org        String
+  location_org        String
+  major               String
+  name                String
+  organization        String
+  path_after_graduate String
+  /// path_type           String
+  path_fr           String
+  position_type       String
+  /// Multiple data types found: Int: 60.3%, BigInt: 39.7% out of 519 sampled entries
+  sid                 Json
+  type_org            String
+}
