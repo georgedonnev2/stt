@@ -1,13 +1,654 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 from pymongo import MongoClient, UpdateOne
 import logging
 
 logging.basicConfig(level=logging.INFO)
 
+### --------------------------------------------------------------------------------------------------------------------
+### class definition
+### --------------------------------------------------------------------------------------------------------------------
 
-### ----------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+class ListChn500Year:
+
+    #
+    def __init__(self, year):
+        self.__tag = "chn500"
+        self.__tag_mark = "chn"  # mark as 'chn' if it is in the list of chn.
+        self.__year = year
+        self.__tree = {}
+
+    #
+    def load(self, tree):
+        for node in tree:
+            tmp_node = {
+                node["organization_fr"]: {
+                    "rank": node["rank"],
+                    "enterprise": node["enterprise"],
+                    "revenue": node["revenue"],
+                    "profit": node["profit"],
+                }
+            }
+            self.__tree.update(tmp_node)
+
+    @property
+    def mark(self):
+        return self.__tag_mark
+
+    @property
+    def size(self):
+        return len(self.__tree)
+
+    @property
+    def tag(self):
+        return self.__tag
+
+    @property
+    def tree(self):
+        return self.__tree
+
+    @property
+    def year(self):
+        return self.__year
+
+    @year.setter
+    def year(self, year):
+        if type(year) == str:
+            self.__year = year
+        else:
+            raise TypeError("string expected such as 'y2024'.")
 
 
-def copy_collection(collection_to, collection_from, field_mapping_to_from):
+# ------------------------------------------------------------------------------
+class ListGlb500Year:
+
+    #
+    def __init__(self, year):
+        self.__tag = "glb500"
+        self.__tag_mark = "glb"  # mark as 'glb' if it is in the list of glb.
+        self.__year = year
+        self.__tree = {}
+
+    #
+    def load(self, tree):
+        for node in tree:
+            tmp_node = {
+                node["organization_fr"]: {
+                    "rank": node["rank"],
+                    "enterprise": node["enterprise"],
+                    "revenue": node["revenue"],
+                    "profit": node["profit"],
+                    "country": node["country"],
+                }
+            }
+            self.__tree.update(tmp_node)
+
+    @property
+    def mark(self):
+        return self.__tag_mark
+
+    @property
+    def size(self):
+        return len(self.__tree)
+
+    @property
+    def tag(self):
+        return self.__tag
+
+    @property
+    def tree(self):
+        return self.__tree
+
+    @property
+    def year(self):
+        return self.__year
+
+    @year.setter
+    def year(self, year):
+        if type(year) == str:
+            self.__year = year
+        else:
+            raise TypeError("string expected such as 'y2024'.")
+
+
+# ------------------------------------------------------------------------------
+class ListSOE:
+
+    ###
+    def __init__(self, year):
+        self.__tag = "soe"
+        self.__tag_mark = "soe"  # mark as 'soe' if it is in the list of soe.
+        self.__year = year  # although soe is not relevant to year
+        self.__tree = {}
+
+    def load(self, tree):
+        for node in tree:
+            tmp_node = {node["organization_fr"]: {}}
+            self.__tree.update(tmp_node)
+
+    @property
+    def mark(self):
+        return self.__tag_mark
+
+    @property
+    def size(self):
+        return len(self.__tree)
+
+    @property
+    def tag(self):
+        return self.__tag
+
+    @property
+    def tree(self):
+        return self.__tree
+
+    @property
+    def year(self):
+        return self.__year
+
+    @year.setter
+    def year(self, year):
+        if type(year) == str:
+            self.__year = year
+        else:
+            raise TypeError("string expected such as 'y2024'.")
+
+
+# ------------------------------------------------------------------------------
+class Organization:
+
+    ###
+    def __init__(self):
+        self.__tree = {}
+        self.__post2db_year = ""
+        self.__post2db_tags = {}
+
+        # doc["sn"]: {
+        #     "name_fr": doc["name_fr"],
+        #     "category": doc["category"],
+        #     "hierarchy_psn": doc["hierarchy_psn"],
+
+    ###
+    def load(self, tree):
+        for node in tree:
+            tmp_node = {
+                node["sn"]: {
+                    "name_fr": node["name_fr"],
+                    "hierarchy_psn": node["hierarchy_psn"],
+                    "category": node["category"],
+                    "root_node": {},  # {"sn": "xxx", "name_fr": "xxx"}
+                    "child": {},
+                    "glb500": {},
+                    "chn500": {},
+                    "soe": {},
+                }
+            }
+            self.__tree.update(tmp_node)
+
+    ###
+    # def copy_tag(self, list):
+    #     for node in list.tree:
+    #         for key in self.__tree:
+    #             if key == node:
+    #                 self.__tree[key][list.tag][list.year] = list.tree[node][list.tag][
+    #                     list.year
+    #                 ]
+
+    ###
+    # def copy_root_node(self, list):
+    #     for node in list.tree:
+    #         for key in self.__tree:
+    #             if key == node:
+    #                 self.__tree[key]["root_node"] = list.tree[node]["root_node"]
+
+    ###
+    def set_h(self):
+
+        tree_psn_nf04 = {}
+
+        for key, value in self.__tree.items():
+            psn = str(value.get("hierarchy_psn"))
+            if (psn != "0") and (psn != ""):
+                if psn in self.__tree:
+                    self.__tree.get(psn)["child"][key] = {}
+                else:
+                    node = {psn: {}}
+                    tree_psn_nf04.update(node)
+
+        return tree_psn_nf04
+
+    ###
+    def set_root_node(self, node, root_node):
+
+        self.__tree[node]["root_node"] = {
+            "sn": root_node,
+            "name_fr": self.__tree[root_node]["name_fr"],
+        }
+
+        for child in self.__tree[node]["child"]:
+            self.set_root_node(child, root_node)
+
+        return
+
+    ###
+    def set_tag_xx(self, list_xx, is_set_tag_xx_root=1):
+        # list_xx could be list_soe, list_chn500_y2023, ..., etc.
+
+        # mark as 'xx' if organization is in the list of xx.
+        for organization_fr in list_xx.tree:
+            for node, value in self.__tree.items():
+                if organization_fr == value["name_fr"]:
+                    # e.g., value["chn500"]["y2023"] = "chn"
+                    value[list_xx.tag][list_xx.year] = list_xx.mark
+
+        #
+        # will not set root tag for some tags like tag 'nht (national high tech)' and tag 'plc (public list company)'.
+        if is_set_tag_xx_root == 1:
+            tmp_tree = self.__set_tag_xx_root(list_xx.tag, list_xx.mark, list_xx.year)
+            if len(tmp_tree) > 0:
+                logging.info(
+                    f"{len(tmp_tree)} root node(s) are set as tag [{list_xx.mark}] : {tmp_tree}."
+                )
+
+        for node, value in self.__tree.items():
+            psn = str(value["hierarchy_psn"])
+            if (psn == "") or (
+                psn == "0"
+            ):  # set as "nf04" if it is not in the list of xx.
+                self.__set_tag_xx_child(
+                    node,
+                    list_xx.tag,
+                    list_xx.mark,
+                    list_xx.year,
+                    value[list_xx.tag].get(list_xx.year, ""),
+                )
+
+        return
+
+    ###
+    def __get_tag_xx_child(self, node, tag, mark, year):
+        if self.__tree[node][tag].get(year, "") == mark:
+            return 1
+
+        for child in self.__tree[node]["child"]:
+            if self.__get_tag_xx_child(child, tag, mark, year) == 1:
+                return 1
+
+        return 0
+
+    ###
+    def __set_tag_xx_root(self, tag, mark, year):
+
+        tmp_tree = {}
+        for node, value in self.__tree.items():
+            psn = str(value["hierarchy_psn"])
+            if (psn == "") or (psn == "0"):
+                if self.__get_tag_xx_child(node, tag, mark, year) == 1:
+                    if self.__tree[node][tag].get(year, "") != mark:
+                        self.__tree[node][tag][year] = "[" + mark + "]"
+                        tmp_node = {node: value["name_fr"]}
+                        tmp_tree.update(tmp_node)
+
+        return tmp_tree
+
+    ###
+    def __set_tag_xx_child(self, node, tag_xx, mark_xx, year, mark):
+
+        if (mark != mark_xx) and (mark != ("[" + mark_xx + "]")):
+            self.__tree[node][tag_xx][year] = "nf04"
+        elif self.__tree[node][tag_xx].get(year, "") != mark_xx:
+            tmp_node = {year: mark}
+            self.__tree[node][tag_xx].update(tmp_node)
+
+        mark_for_child = self.__tree[node][tag_xx][year]
+        if mark_for_child == mark_xx:
+            mark_for_child = "[" + mark_xx + "]"
+        for child in self.__tree[node]["child"]:
+            self.__set_tag_xx_child(child, tag_xx, mark_xx, year, mark_for_child)
+
+        return
+
+    ###
+    def show_h(self, node, tag, year, loh=1):
+
+        basic_info = (
+            "["
+            + node
+            + "]"
+            + self.__tree[node]["name_fr"]
+            + "("
+            + self.__tree[node][tag].get(year, "")
+            + ")"
+            + "("
+            + self.__tree[node]["root_node"]["sn"]
+            + ")"
+        )
+
+        if loh == 1:
+            more_info = "*"
+        elif loh >= 2:
+            more_info = "|" * (loh - 1)
+            if self.__tree[node]["child"] == {}:
+                more_info = more_info + "+"
+            else:
+                more_info = more_info + str(loh)
+
+        basic_info = more_info + basic_info
+        print(basic_info)
+
+        for child in self.__tree[node]["child"]:
+            self.show_h(child, tag, year, loh + 1)
+
+        return
+
+    # --------------------------------------------------------------------------
+    @property
+    def post2db_tags(self):
+        return self.__post2db_tags
+
+    @post2db_tags.setter
+    def post2db_tags(self, tags):
+        if type(tags) == dict:
+            self.__post2db_tags = tags
+        else:
+            raise TypeError("dict expected such as {'glb500':{}, 'soe':{}}.")
+
+    @property
+    def post2db_year(self):
+        return self.__post2db_year
+
+    @post2db_year.setter
+    def post2db_year(self, year):
+        if type(year) == str:
+            self.__post2db_year = year
+        else:
+            raise TypeError("string expected such as 'y2024'.")
+
+    @property
+    def size(self):
+        return len(self.__tree)
+
+    @property
+    def tree(self):
+        return self.__tree
+
+
+# ------------------------------------------------------------------------------
+class Student:
+
+    def __init__(self, year):
+        self.__year = year
+        self.__tree = {}
+        self.__post2db_tags = {}
+
+    ###
+    def load(self, tree):
+        for node in tree:
+            tmp_node = {
+                str(node["sid"]): {
+                    "name": node["name"],
+                    "degree_year": node["degree_year"],
+                    "path_fr": node["path_fr"],
+                    "organization_fr": node["organization_fr"],
+                    "hierarchy": {"sn": "", "root_node": {}},
+                    self.__year: {},
+                }
+            }
+            self.__tree.update(tmp_node)
+
+    ###
+    def copy_tag_xx(self, organization):
+
+        for node in organization.tree:
+
+            for tag in self.__post2db_tags:
+                if (tag in organization.tree[node]) == False:
+                    logging.warning(
+                        f"tag ({tag}) is not found in node ({node}) of organization. copy skipped."
+                    )
+                    break
+                if (self.__year in organization.tree[node][tag]) == False:
+                    logging.warning(
+                        f"year ({self.__year}) is not found in tag ({tag}) of node ({node}) of organization. copy skipped."
+                    )
+                    break
+
+                for key in self.__tree:
+                    if (
+                        self.__tree[key]["organization_fr"]
+                        == organization.tree[node]["name_fr"]
+                    ):  # org name matched
+                        self.__tree[key][self.__year][tag] = organization.tree[node][
+                            tag
+                        ][self.__year]
+
+        return
+
+    ###
+    def copy_hierarchy(self, organization):
+
+        for node, value_org in organization.tree.items():
+            for key, value_std in self.__tree.items():
+                if value_std["organization_fr"] == value_org["name_fr"]:
+                    value_std["hierarchy"]["sn"] = node
+                    value_std["hierarchy"]["root_node"] = value_org["root_node"]
+
+        return
+
+    @property
+    def post2db_tags(self):
+        return self.__post2db_tags
+
+    @post2db_tags.setter
+    def post2db_tags(self, tags):
+        if type(tags) == dict:
+            self.__post2db_tags = tags
+        else:
+            raise TypeError(" dict expected such as {'glb500':{}, 'chn500':{}}.")
+
+    @property
+    def size(self):
+        return len(self.__tree)
+
+    @property
+    def tree(self):
+        return self.__tree
+
+    @property
+    def year(self):
+        return self.__year
+
+    @year.setter
+    def year(self, year):
+        if type(year) == str:
+            self.__year = year
+        else:
+            raise TypeError("string expected.")
+
+
+# ------------------------------------------------------------------------------
+class TagOrgChn500:
+
+    def __init__(self, year):
+        self.__tag = "chn500"
+        self.__year = year
+        self.__tree = {}
+
+    ###
+    def load(self, tree):
+        for node in tree:
+            tmp_node = {
+                node["sn"]: {
+                    "name_fr": node["name_fr"],
+                    "hierarchy_psn": node["hierarchy_psn"],
+                    "root_node": {},  # {"sn": "xxx", "name_fr": xxx}
+                    "chn500": {self.__year: "nil"},
+                    "child": {},
+                }
+            }
+            self.__tree.update(tmp_node)
+
+    ###
+    def set_child(self):
+
+        tree_psn_nf04 = {}
+
+        for key, value in self.__tree.items():
+            psn = str(value.get("hierarchy_psn"))
+            if (psn != "0") and (psn != ""):
+                if psn in self.__tree:
+                    self.__tree.get(psn)["child"][key] = {}
+                else:
+                    node = {psn: {}}
+                    tree_psn_nf04.update(node)
+
+        return tree_psn_nf04
+
+    ###
+    def set_root_node(self, node, root_node):
+
+        self.__tree[node]["root_node"] = {
+            "sn": root_node,
+            "name_fr": self.__tree[root_node]["name_fr"],
+        }
+
+        for child in self.__tree[node]["child"]:
+            self.set_root_node(child, root_node)
+
+        return
+
+    ###
+
+    def __get_tag_child(self, node):
+
+        if self.__tree[node]["chn500"].get(self.__year) == "chn":
+            return 1
+
+        for child in self.__tree[node]["child"]:
+            if self.__get_tag_child(child) == 1:
+                return 1
+
+        return 0
+
+    def __set_tag_root(self):
+
+        tmp_tree = {}
+        for node, value in self.__tree.items():
+            psn = str(value["hierarchy_psn"])
+            if ((psn == "") or (psn == "0")) and (
+                value["chn500"].get(self.__year, "") == "nil"
+            ):
+                if self.__get_tag_child(node) == 1:
+                    self.__tree[node]["chn500"][self.__year] = "[chn]"
+                    tmp_node = {node: value["name_fr"]}
+                    tmp_tree.update(tmp_node)
+
+        return tmp_tree
+
+    def __set_tag_child(self, node, tag):
+
+        if (tag != "chn") and (tag != "[chn]"):
+            self.__tree[node]["chn500"][self.__year] = "nf04"
+        elif self.__tree[node]["chn500"][self.__year] != "chn":
+            self.__tree[node]["chn500"][
+                self.__year
+            ] = tag  # i.e., [chn]. can't be "chn".
+
+        tag_for_child = self.__tree[node]["chn500"][self.__year]
+        if tag_for_child == "chn":
+            tag_for_child = "[chn]"
+
+        for child in self.__tree[node]["child"]:
+            self.__set_tag_child(child, tag_for_child)
+
+        return
+
+    def set_tag_chn500(self, tree_chn500):
+
+        # set 'chn' flag according to list_chn500.
+        for organization_fr in tree_chn500:
+            for node, value in self.__tree.items():
+                if organization_fr == value["name_fr"]:
+                    value["chn500"][self.__year] = "chn"
+
+        tmp_tree = self.__set_tag_root()
+        if len(tmp_tree) > 0:
+            logging.info(
+                f"{len(tmp_tree)} root node(s) are set as tag [chn] : {tmp_tree}."
+            )
+
+        for node, value in self.__tree.items():
+            psn = str(value["hierarchy_psn"])
+            if (psn == "") or (psn == "0"):  # set as "nf04" if it is not chn_500
+                self.__set_tag_child(node, value["chn500"][self.__year])
+
+        return
+
+    ###
+    def show_h(self, node, loh=1):
+
+        basic_info = (
+            "["
+            + node
+            + "]"
+            + self.__tree[node]["name_fr"]
+            + "("
+            + self.__tree[node]["chn500"].get(self.year, "")
+            + ")"
+            + "("
+            + self.__tree[node]["root_node"]["sn"]
+            + ")"
+        )
+
+        if loh == 1:
+            more_info = "*"
+        elif loh >= 2:
+            more_info = "|" * (loh - 1)
+            if self.__tree[node]["child"] == {}:
+                more_info = more_info + "+"
+            else:
+                more_info = more_info + str(loh)
+
+        basic_info = more_info + basic_info
+        print(basic_info)
+
+        for child in self.__tree[node]["child"]:
+            self.show_h(child, loh + 1)
+
+        return
+
+    @property
+    def size(self):
+        return len(self.__tree)
+
+    @property
+    def tree(self):
+        return self.__tree
+
+    @property
+    def tag(self):
+        return self.__tag
+
+    @property
+    def year(self):
+        return self.__year
+
+    @year.setter
+    def year(self, year):
+        if type(year) == str:
+            self.__year = year
+        else:
+            raise TypeError("string expected.")
+
+
+### --------------------------------------------------------------------------------------------------------------------
+###
+### --------------------------------------------------------------------------------------------------------------------
+def collection_copy(collection_to, collection_from, field_mapping_to_from):
 
     client = MongoClient()
     db = client["remai"]
@@ -28,7 +669,7 @@ def copy_collection(collection_to, collection_from, field_mapping_to_from):
                 doc_b[field_to] = str(doc_a[field_from])
             else:
                 doc_b[field_to] = doc_a[field_from]
-            print("///doc_b=%s" % doc_b)
+            # print("///doc_b=%s" % doc_b)
 
         # print(">>>doc_b=%s" % doc_b)
         doc_list.append(doc_b)
@@ -43,614 +684,300 @@ def copy_collection(collection_to, collection_from, field_mapping_to_from):
     return result
 
 
-### ----------------------------------------------------------------------------
-def load4db_list_glb500_yxxxx(year="y2023"):
+### --------------------------------------------------------------------------------------------------------------------
+###
+### --------------------------------------------------------------------------------------------------------------------
 
-    client = MongoClient()
-    db = client["remai"]
-    collection = db.get_collection("list_glb500_" + year)
+if __name__ == "__main__":
 
-    # cursor = collection.find().limit(10)
-    cursor = collection.find()
-    list = dict()
-
-    # {
-    #   "_id": {
-    #     "$oid": "679ac14c4b9e0eb5a52fff27"
-    #   },
-    #   "rank": 5,
-    #   "enterprise": "中国石油天然气集团有限公司（CHINA NATIONAL PETROLEUM)",
-    #   "revenue": 483019.2,
-    #   "profit": 21079.7,
-    #   "country": "中国",
-    #   "organization_fr": "中国石油天然气集团有限公司"
-    # }
-
-    for doc in cursor:
-        # print("doc=%s" % doc)
-        item = {
-            doc["organization_fr"]: {
-                "rank": doc["rank"],
-                "enterprise": doc["enterprise"],
-                "revenue": doc["revenue"],
-                "profit": doc["profit"],
-                "country": doc["country"],
-            }
-        }
-        list.update(item)
-
-    logging.debug("list=%s" % list)
-
-    client.close()
-
-    return list
-
-
-### ----------------------------------------------------------------------------
-def load4db_organization():
-
-    client = MongoClient()
-    db = client["remai"]
-    collection = db.get_collection("organization")
-
-    cursor = collection.find()
-    list = {}
-
-    # doc = {
-    #     "_id": ObjectId("678f421c1be6fa013737e356"),
-    #     "sn": "bs7",
-    #     "name": "上海感图网络科技有限公司",
-    #     "name_fr": "上海感图网络科技有限公司",
-    #     "name_aka": "",
-    #     "category": "ent",
-    #     "hierarchy_psn": "",
-    #     "h_comments": "",
-    # }
-
-    for doc in cursor:
-        # print("doc=%s" % doc)
-        item = {
-            doc["sn"]: {
-                "name_fr": doc["name_fr"],
-                "category": doc["category"],
-                "hierarchy_psn": doc["hierarchy_psn"],
-                "glb500": {},
-            }
-        }
-        list.update(item)
-
-    client.close()
-
-    return list
-
-
-### ----------------------------------------------------------------------------
-def load4db_student_yyyy(year):
-
-    client = MongoClient()
-    db = client["remai"]
-    collection = db.get_collection("student_" + year)
-
-    # cursor = collection.find().limit(10)
-    cursor = collection.find()
-    list = dict()
-
-    # {
-    #     "_id": {"$oid": "679e0ff2245c3fc7bf35f19f"},
-    #     "sid": 1191190324,
-    #     "name": "汪磊",
-    #     "major": "数字媒体技术(080906)",
-    #     "path_after_graduate": "其他录用形式就业",
-    #     "organization": "三七互娱网络科技集团股份有限公司",
-    #     "type_org": "其他企业",
-    #     "industry_org": "信息传输、软件和信息技术服务业",
-    #     "location_org": "广东省广州市市辖区",
-    #     "position_type": "其他专业技术人员",
-    #     "degree_year": "bachelor-y2023",
-    #     "path_fr": "got-job",
-    #     "organization_fr": "三七互娱网络科技集团股份有限公司",
-    # }
-
-    for doc in cursor:
-        # print("doc=%s" % doc)
-        item = {
-            str(doc["sid"]): {
-                "name": doc["name"],
-                "degree_year": doc["degree_year"],
-                "path_fr": doc["path_fr"],
-                "organization_fr": doc["organization_fr"],
-                "sn": "",
-                year: {},
-            }
-        }
-
-        list.update(item)
-
-    client.close()
-
-    return list
-
-
-### ----------------------------------------------------------------------------
-def post2db_org_glb500(tree, field, year):
-
-    client = MongoClient()
-    db = client["remai"]
-    collection = db.get_collection("org_glb500")
-
-    bulk_operations = []
-    for node in tree:
-        # print("sn=%s, value=%s" % (node, tree[node][field][year]))
-        bulk_operations.append(
-            UpdateOne({"sn": node}, {"$set": {field: {year: tree[node][field][year]}}})
-        )
-
-    result = collection.bulk_write(bulk_operations)
-    print(
-        f"Matched {result.matched_count} documents and modified {result.modified_count} documents."
+    """
+    logging.info(
+        "copy collection. {'collection_to': 'tag_org_chn500', 'collection_from': 'organization}"
     )
 
-    client.close()
+    field_mapping = {
+        "sn": "sn",
+        "name_fr": "name_fr",
+        "hierarchy_psn": "hierarchy_psn",
+    }
+    collection_copy("tag_org_chn500", "organization", field_mapping)
+    logging.info("copied.")
+    """
 
-    return
+    gd_client = MongoClient()
+    gd_db = gd_client["remai"]
 
+    # load from db.
+    logging.info("loading from db. {'collection': 'list_chn500_y2023', 'year': 'y2023}")
+    tmp_list = gd_db.get_collection("list_chn500_y2023").find()
+    list_chn500_y2023 = ListChn500Year("y2023")
+    list_chn500_y2023.load(tmp_list)
+    logging.info("loaded.")
 
-### ----------------------------------------------------------------------------
-def post2db_organization(tree, field, year):
+    # print("size=%d" % list_chn500_y2023.size)
+    # print(list_chn500_y2023.year)
+    # print(list_chn500_y2023.tree)
 
-    client = MongoClient()
-    db = client["remai"]
-    collection = db.get_collection("organization")
+    # tag_org_chn500 = TagOrgChn500("y2023")
+    # logging.info("loading from db. {'collection': 'tag_org_chn500'}")
+    # tmp_list = gd_db.get_collection("tag_org_chn500").find()
+    # tag_org_chn500.load(tmp_list)
+    # logging.info("loaded.")
 
+    # tag_org_chn500.set_tag_chn500(list_chn500_y2023.tree)
+
+    # for node, value in tag_org_chn500.tree.items():
+    #     psn = str(value.get("hierarchy_psn"))
+    #     if (psn == "0") or (psn == ""):
+    #         print("-" * 36)
+    #         tag_org_chn500.show_h(node)
+    # print("-" * 36)
+    # tag_org_chn500.show_h("asx")
+    # print("-" * 36)
+    # tag_org_chn500.show_h("aue")
+    # print("-" * 36)
+    # tag_org_chn500.show_h("aso")
+    # print("-" * 36)
+    # tag_org_chn500.show_h("bcz")
+    # print("-" * 36)
+    # tag_org_chn500.show_h("a5g")
+    # print("-" * 36)
+    # tag_org_chn500.show_h("aa4")
+    # print("-" * 36)
+    # tag_org_chn500.show_h("asn")
+    sn_to_check = {
+        "asx": {},
+        "aue": {},
+        "aso": {},
+        "bcz": {},
+        "a5g": {},
+        "aa4": {},
+        "asn": {},
+        "avp": {},
+    }
+
+    # for node in sn_to_check:
+    #     print(f"sn={node}, value={tag_org_chn500.tree[node]}")
+
+    ###
+    """
+    logging.info("update to db. {'collection': 'tag_org_chn500'}")
     bulk_operations = []
-    for node in tree:
-        # print("sn=%s, value=%s" % (node, tree[node][field][year]))
-        bulk_operations.append(
-            UpdateOne({"sn": node}, {"$set": {field: {year: tree[node][field][year]}}})
-        )
-
-    result = collection.bulk_write(bulk_operations)
-    print(
-        f"Matched {result.matched_count} documents and modified {result.modified_count} documents."
-    )
-
-    client.close()
-
-    return
-
-
-### ----------------------------------------------------------------------------
-def post2db_student_yyyy(tree, field, year):
-
-    client = MongoClient()
-    db = client["remai"]
-    # collection = db.get_collection("student_gy2023")
-    collection = db.get_collection("student_" + year)
-
-    bulk_operations = []
-    for node in tree:
-        # print("sn=%s, value=%s" % (node, tree[node][field][year]))
+    for node, value in tag_org_chn500.tree.items():
+        # print(f"{node}, {value['chn500'][tag_org_chn500.year]}")
         bulk_operations.append(
             UpdateOne(
-                {"sid": node},
+                {"sn": node},
                 {
                     "$set": {
-                        year: {field: tree[node][year][field]},
-                        "sn": tree[node]["sn"],
+                        "chn500": {
+                            tag_org_chn500.year: value["chn500"][tag_org_chn500.year]
+                        },
+                        # "root_node": {},
+                        # "root_node": {
+                        #     "sn": value["root_node"]["sn"],
+                        #     "name_fr": value["root_node"]["name_fr"],
+                        # },
                     }
                 },
             )
         )
 
-    result = collection.bulk_write(bulk_operations)
-    print(
+    result = gd_db.get_collection("tag_org_chn500").bulk_write(bulk_operations)
+    logging.info(
         f"Matched {result.matched_count} documents and modified {result.modified_count} documents."
     )
+    logging.info("updated.")
+    """
 
-    client.close()
+    ###
+    organization = Organization()
+    logging.info("loading from db. {'collection': 'organization'}")
+    tmp_list = gd_db.get_collection("organization").find()
+    organization.load(tmp_list)
+    logging.info("loaded.")
 
-    return
+    tree_nf04 = organization.set_h()
+    if len(tree_nf04) > 0:
+        logging.warning(f"parent sn not found : {tree_nf04}")
 
+    for node, value in organization.tree.items():
+        psn = str(value["hierarchy_psn"])
+        if (psn == "0") or (psn == ""):
+            organization.set_root_node(node, node)
 
-### ----------------------------------------------------------------------------
-def load4db_org_glb500():
+    ###
+    list_soe_y2023 = ListSOE("y2023")
+    logging.info("loading from db. {'collection': 'list_soe'}")
+    tmp_list = gd_db.get_collection("list_soe").find()
+    list_soe_y2023.load(tmp_list)
+    logging.info("loaded.")
 
-    client = MongoClient()
-    db = client["remai"]
-    collection = db.get_collection("org_glb500")
+    ###
+    list_glb500_y2023 = ListGlb500Year("y2023")
+    logging.info("loading from db. {'collection': 'list_glb500_y2023'}")
+    tmp_list = gd_db.get_collection("list_glb500_y2023").find()
+    list_glb500_y2023.load(tmp_list)
+    logging.info("loaded.")
 
-    # cursor = collection.find().limit(10)
-    cursor = collection.find()
-    org_list = dict()
+    ###
+    logging.info(
+        f"setting tag({list_soe_y2023.tag}) of year({list_soe_y2023.year}) to organization..."
+    )
+    organization.set_tag_xx(list_soe_y2023)
+    logging.info("set done.")
 
-    for doc in cursor:
-        # print("doc=%s" % doc)
-        org = {
-            doc["sn"]: {
-                "name_fr": doc["name_fr"],
-                "hierarchy_psn": doc["hierarchy_psn"],
-                "glb500": {},
-                "child": {},
-            }
-        }
-        org_list.update(org)
+    ###
+    logging.info(
+        f"setting tag({list_chn500_y2023.tag}) of year({list_chn500_y2023.year}) to organization..."
+    )
+    organization.set_tag_xx(list_chn500_y2023)
+    logging.info("set done.")
 
-    logging.debug("org_list=%s" % org_list)
+    ###
+    logging.info(
+        f"setting tag({list_glb500_y2023.tag}) of year({list_glb500_y2023.year}) to organization..."
+    )
+    organization.set_tag_xx(list_glb500_y2023)
+    logging.info("set done.")
 
-    client.close()
+    # logging.info(
+    #     f"copy tag ({tag_org_chn500.tag}, {tag_org_chn500.year}) + root_node from 'tag_org_chn500' to 'organization'"
+    # )
+    # organization.copy_tag(tag_org_chn500)
+    # organization.copy_root_node(tag_org_chn500)
+    # logging.info("copied.")
 
-    return org_list
-
-
-###-----------------------------------------------------------------------------
-def set_tag_xx_yyyy(list_to, list_ref, field, year):
-
-    for node in list_to:
-        list_to[node][year][field] = "nil"
-        list_to[node]["sn"] = "nil"
-
-    for node_ref in list_ref:
-        for node_to in list_to:
-            if list_ref[node_ref]["name_fr"] == list_to[node_to]["organization_fr"]:
-                list_to[node_to]["sn"] = node_ref
-                list_to[node_to][year][field] = list_ref[node_ref][field][year]
-
-    return
-
-
-###-----------------------------------------------------------------------------
-def copy_flag_xx_yyyy(list_to, list_from, field, year):
-
-    for node in list_to:
-        list_to[node][field][year] = "nil"
-
-    for node_from in list_from:
-        for node_to in list_to:
-
-            # if sn == sn
-            if node_to == node_from:
-                list_to[node_to][field][year] = list_from[node_from][field][year]
-
-    return
-
-
-###-----------------------------------------------------------------------------
-def set_flag_glb500(org_list, list_glb500, year):
-
-    ll_org_glb500 = {}
-    tree = org_list.copy()
-    for sn in tree:
-        tree[sn]["glb500"][year] = "nil"
-
-    for key_glb in list_glb500:
-        for sn in tree:
-            if tree[sn]["name_fr"] == key_glb:
-                tree[sn]["glb500"][year] = "glb"
-                node = {sn: tree[sn]["name_fr"]}
-                ll_org_glb500.update(node)
-            # else:
-            #     tree[sn]["glb500"][year] = "nil"
-
-    return tree, ll_org_glb500
-
-
-###-----------------------------------------------------------------------------
-def set_flag_glb500_child(node, tree, field, year, flag):
-
-    if (flag != "[glb]") and (flag != "glb"):
-        tree[node][field][year] = "nf04"
-    elif tree[node][field][year] != "glb":
-        tree[node][field][year] = flag  # i.e., [glb]. can't be "glb".
-
-    flag_for_child = tree[node][field][year]
-    if flag_for_child == "glb":
-        flag_for_child = "[glb]"
-
-    for child in tree[node]["child"]:
-        set_flag_glb500_child(child, tree, "glb500", "y2023", flag_for_child)
-
-    return
-
-
-###-----------------------------------------------------------------------------
-def get_child_flag(node, tree, field, year):
-
-    if tree[node][field][year] == "glb":
-        return 1
-
-    for child in tree[node]["child"]:
-        if get_child_flag(child, tree, field, year) == 1:
-            return 1
-
-    return 0
-
-
-###-----------------------------------------------------------------------------
-def set_h(tree):
-
-    tree_h = tree.copy()
-    print("tree_h=%s" % tree_h)
-    tree_error = {}
-
-    for key, value in tree_h.items():
-        psn = str(value.get("hierarchy_psn"))
-        if (psn != "0") and (psn != ""):
-            if psn in tree_h:
-                tree_h.get(psn)["child"][key] = {}
-            else:
-                node = {psn: {}}
-                print("node=%s" % node)
-                tree_error.update(node)
-
-    return tree_h, tree_error
-
-
-###-----------------------------------------------------------------------------
-def show_h(node, tree, loh=1, name="name_fr", field="", year=""):
-
-    # print("loh=%d, name=%s, field=%s, year=%s" % (loh, name, field, year))
-
-    basic_info = "[" + node + "]" + tree[node][name]
-
-    if field != "":
-        if year != "":
-            more_info = "(" + tree[node].get(field, "").get(year, "") + ")"
-        else:
-            # print("tree[node][field]=%s" % tree[node][field])
-            more_info = "(" + str(tree[node].get(field, "")) + ")"
-    else:
-        if year != "":
-            more_info = "(" + tree[node].get(year, "") + ")"
-        else:
-            more_info = ""
-    basic_info = basic_info + more_info
-
-    if loh == 1:
-        more_info = "*"
-    elif loh >= 2:
-        more_info = "|" * (loh - 1)
-        if tree[node]["child"] == {}:
-            more_info = more_info + "+"
-        else:
-            more_info = more_info + str(loh)
-    basic_info = more_info + basic_info
-
-    print(basic_info)
-
-    for child in tree[node]["child"]:
-        show_h(child, tree, loh + 1, name, field, year)
-
-    return
-
-
-###-----------------------------------------------------------------------------
-# """
-org_list = load4db_org_glb500()
-ll_glb500_y2023 = load4db_list_glb500_yxxxx("y2023")
-# print("list=%s" % ll_glb500_y2023)
-
-# set global_500_yyyy flag if the enterprise is in the list of global_500_yyyy.
-org_list, tmp_tree = set_flag_glb500(org_list, ll_glb500_y2023, "y2023")
-if len(tmp_tree) > 0:
     print("-" * 36)
-    print("len=%d" % len(tmp_tree))
-    # print("tree_glb500=%s" % tmp_tree)
+    print("check value of organization")
+    for node in sn_to_check:
+        print("-" * 36)
+        print(f"sn={node}, value={organization.tree[node]}")
 
-# set hierarchy of organization according to parent sn.
-org_list, tmp_tree = set_h(org_list)
-print("org_list=%s" % org_list)
-if len(tmp_tree) > 0:
-    print("tree_error=%s" % tmp_tree)
-
-# set parent as [glb] if there is a child glb500.
-tmp_tree = {}
-for node, value in org_list.items():
-    psn = str(value["hierarchy_psn"])
-    if ((psn == "") or (psn == "0")) and (value["glb500"]["y2023"] == "nil"):
-        if get_child_flag(node, org_list, "glb500", "y2023") == 1:
-            org_list[node]["glb500"]["y2023"] = "[glb]"
-            tmp_node = {node: value["name_fr"]}
-            tmp_tree.update(tmp_node)
-if len(tmp_tree) > 0:
     print("-" * 36)
-    print("len=%d, parent_tree_glb500=%s" % (len(tmp_tree), tmp_tree))
+    print("check value of organization")
+    for node in sn_to_check:
+        print("-" * 36)
+        organization.show_h(node, "soe", "y2023")
 
-# set child as [glb] if parent is global_500/
-tmp_tree = {}
-for key, value in org_list.items():
-    psn = str(value["hierarchy_psn"])
-    if (psn == "") or (psn == "0"):  # set as "nf04" if it is not global_500.
-        set_flag_glb500_child(
-            key, org_list, "glb500", "y2023", value["glb500"]["y2023"]
+    print("-" * 36)
+    print("check value of organization")
+    for node in sn_to_check:
+        print("-" * 36)
+        organization.show_h(node, "chn500", "y2023")
+
+    print("-" * 36)
+    print(f"check value of organization. tag={list_glb500_y2023.tag}")
+    for node in sn_to_check:
+        print("-" * 36)
+        organization.show_h(node, list_glb500_y2023.tag, "y2023")
+
+    ###
+
+    """
+    organization.post2db_year = "y2023"
+    organization.post2db_tags = {
+        list_glb500_y2023.tag: {},
+        list_chn500_y2023.tag: {},
+        list_soe_y2023.tag: {},
+    }
+    logging.info(
+        "update to db. {'collection': 'organization', 'tag': %s, 'year': %s}"
+        % (organization.post2db_tags, organization.post2db_year)
+    )
+    bulk_operations = []
+    for node, value in organization.tree.items():
+        bulk_operations.append(
+            UpdateOne(
+                {"sn": node},
+                {
+                    "$set": {
+                        "chn500": {
+                            tag_org_chn500.year: value["chn500"][tag_org_chn500.year]
+                        },
+                        "root_node": value["root_node"],
+                    }
+                },
+            )
         )
 
+    result = gd_db.get_collection("organization").bulk_write(bulk_operations)
+    logging.info(
+        f"Matched {result.matched_count} documents and modified {result.modified_count} documents."
+    )
+    logging.info("updated.")
+    """
 
-# for node, value in org_list.items():
-#     psn = str(value.get("hierarchy_psn"))
-#     if (psn == "0") or (psn == ""):
-#         print("-" * 36)
-#         show_h(node, org_list, 1, "name_fr", "glb500", "y2023")
+    ###
+    # """
+    student_y2023 = Student("y2023")
+    logging.info("loading from db. {'collection': 'student_y2023'}")
+    tmp_list = gd_db.get_collection("student_y2023").find()
+    student_y2023.load(tmp_list)
+    logging.info("loaded.")
 
-# update glb flag to db
-# post2db_org_glb500(org_list, "glb500", "y2023")
+    # for sid in student_y2023.tree:
+    #     print("-" * 36)
+    #     print(f"sid={sid}, value={student_y2023.tree[sid]}")
 
+    sid_to_check = {
+        "1020316135": {},
+        "1191190115": {},
+        "6201910022": {},
+        "1033190634": {},
+    }
+    for sid in sid_to_check:
+        print("-" * 36)
+        print(f"sid={sid}, value={student_y2023.tree[sid]}")
 
-# copy tags to collection organization.
-logging.info("loading doc from db, collection = organization")
-organization_list = load4db_organization()
+    #
+    logging.info("copying tags ...")
+    student_y2023.post2db_tags = {"glb500": {}, "chn500": {}, "soe": {}}
+    student_y2023.copy_tag_xx(organization)
+    logging.info("copied.")
 
-logging.info("setting flag: collection = organization, field = glb500, year = y2023")
-copy_flag_xx_yyyy(organization_list, org_list, "glb500", "y2023")
+    ###
+    logging.info("copying hierarchy ...")
+    student_y2023.copy_hierarchy(organization)
+    logging.info("copied.")
 
-# logging.info(
-#     "updating doc to db. {'collection': 'organizaion', 'field': 'glb500', 'year': 'y2023'}"
-# )
-# post2db_organization(organization_list, "glb500", "y2023")
+    for sid in sid_to_check:
+        print("-" * 36)
+        print(f"sid={sid}, value={student_y2023.tree[sid]}")
+    # """
 
-# for node in organization_list:
-#     print("key=%s, value=%s" % (node, organization_list[node]))
-# """
+    """
+    logging.info(f"updating to db. collection = student_y2023.")
+    bulk_operations = []
+    for node, value in student_y2023.tree.items():
+        bulk_operations.append(
+            UpdateOne(
+                {"sid": node},
+                {
+                    "$set": {
+                        "hierarchy": value["hierarchy"],
+                        student_y2023.year: value[student_y2023.year],
+                    }
+                },
+            )
+        )
 
-# """
-### copy tags to collection student_yyyy.
-logging.info("loading doc from db. {'collection': 'student_y2023'}")
-student_y2023_list = load4db_student_yyyy("y2023")
-# print("student_y2023_list=%s" % student_y2023_list)
+    result = gd_db.get_collection("student_y2023").bulk_write(bulk_operations)
+    logging.info(
+        f"Matched {result.matched_count} documents and modified {result.modified_count} documents."
+    )
+    logging.info("updated.")
+    """
 
-set_tag_xx_yyyy(student_y2023_list, organization_list, "glb500", "y2023")
-# for key, value in student_y2023_list.items():
-#     print("key=%s, value=%s" % (key, value))
+    gd_client.close()
 
-logging.info(
-    "updating doc to db. {'collection': 'student_y2023', 'field': 'glb500', 'year': 'y2023'}"
-)
-post2db_student_yyyy(student_y2023_list, "glb500", "y2023")
-logging.info("update done.")
-# """
-
+    logging.info(">>> END <<<")
 
 ### --------------------------------------------------------------------------------------------------------------------
-"""
-field_mapping = {
-    "rank": "rank",
-    "enterprise": "enterprise",
-    "revenue": "revenue",
-    "profit": "profit",
-    "country": "country",
-    "organizaition_frn": "organization_fr",
-}
-copy_collection("glb500_yr23", "list_glb500_y2023", field_mapping)
-"""
+### import data
+### --------------------------------------------------------------------------------------------------------------------
 
 """
-field_mapping_to_from = {
-    # !!! to : from
-    "sid": "sid",
-    "name": "name",
-    "major": "major",
-    "path_after_graduate": "path_after_graduate",
-    "organization": "organization",
-    "type_org": "type_org",
-    "industry_org": "industry_org",
-    "location_org": "location_org",
-    "position_type": "position_type",
-    "degree_year": "degree",  # change field name
-    "path_fr": "path_type",  # change field name
-    "organization_fr": "organization",  # copy organization to organization_fr
-}
-field_mapping_to_from = {
-    # !!! to : from
-    "sid": "sid",
-    "name": "name",
-    "major": "major",
-    "path_after_graduate": "path_after_graduate",
-    "organization": "organization",
-    "type_org": "type_org",
-    "industry_org": "industry_org",
-    "location_org": "location_org",
-    "position_type": "position_type",
-    "degree_year": "degree_year",
-    "path_fr": "path_fr",
-    "organization_fr": "organization_fr",
-}
-logging.info("copy collection. {'from': 'student_gy23', 'to': 'student_y2023'}")
-
-copy_collection("student_y2023", "student_gy2023", field_mapping_to_from)
-# copy_collection("student_y2023", "student_gy23", field_mapping_to_from)
-logging.info("copy done.")
+mongoimport -d remai -c list_chn500_y2023 --type=csv --headerline ~/mdb8/inf-data/list_chn500_y2023.csv
+mongoimport -d remai -c list_soe --type=csv --headerline ~/mdb8/inf-data/list_soe.csv
 """
-
-# doc_list = []
-# doc_b = {
-#     "rank": 2,
-#     "enterprise": "沙特阿美公司（SAUDI ARAMCO)",
-#     "revenue": 603651.4,
-#     "profit": 159069.0,
-#     "country": "沙特阿拉伯",
-#     "organization_fr": "沙特阿美公司",
-# }
-# doc_list.append(doc_b)
-# print("doc_list=%s" % doc_list)
-# doc_b = {
-#     "rank": 5,
-#     "enterprise": "中国石油天然气集团有限公司（CHINA NATIONAL PETROLEUM)",
-#     "revenue": 483019.2,
-#     "profit": 21079.7,
-#     "country": "中国",
-#     "organization_fr": "中国石油天然气集团有限公司",
-# }
-# doc_list.append(doc_b)
-# print("doc_list=%s" % doc_list)
-# doc_b = {
-#     "rank": 6,
-#     "enterprise": "中国石油化工集团有限公司（SINOPEC GROUP)",
-#     "revenue": 471154.2,
-#     "profit": 9656.9,
-#     "country": "中国",
-#     "organization_fr": "中国石油化工集团有限公司",
-# }
-# doc_list.append(doc_b)
-# print("doc_list=%s" % doc_list)
-
-# org_list = OrganizationListH()
-# print("org_list=%s" % org_list)
-
-# org_list = {
-#     "abc": {"name_fr": "name-abc", "hierarchy_psn": "", "glb500": {"y2023": "glb"}}
-# }
-
-# print(">>>org_list:%s" % org_list)
-# tree = org_list
-# field = "glb500"
-# year = "y2023"
-# for node in tree:
-
-#     tmp = "[" + node + "]" + tree[node]["name_fr"] + "(" + tree[node][field][year] + ")"
-#     print("tmp=%s" % tmp)
-#     tmp = "*" + tmp
-#     print("tmp=%s" % tmp)
-
-
-"""
-///mongodb shell
-db.my_collection.aggregate([
-    {
-        $group: {
-            _id: "$my_field", // 按 my_field 字段的值进行分组
-            count: { $sum: 1 } // 计算每个组的文档数量
-        }
-    }
-])
-
-"""
-# db.student_gy23.aggregate([{$group:{_id: "$path_type", count:{$sum:1}}}])
-
-"""
-use sample_airbnb
-db.listingsAndReviews.updateMany(
-  { security_deposit: { $lt: 100 } },
-  {
-    $set: { security_deposit: 100, minimum_nights: 1 }
-  }
-)
-"""
-# db.student_y2023.updateMany(
-#     { degree_year: "bachelor-23"},
-#     {
-#         $set: { degree_year: "bachelor-y2023"}
-#     }
-# )
-# db.student_y2023.updateMany(
-#     { degree_year: "master-23"},
-#     {
-#         $set: { degree_year: "master-y2023"}
-#     }
-# )
-# db.student_y2023.updateMany(
-#     { degree_year: "doctor-23"},
-#     {
-#         $set: { degree_year: "doctor-y2023"}
-#     }
-# )
-
-# db.student_y2023.aggregate([{$group:{_id: "$degree_year", count:{$sum:1}}}])
