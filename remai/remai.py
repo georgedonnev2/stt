@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
-from pymongo import MongoClient, UpdateOne
+from datetime import date, datetime, timedelta, timezone
+import sys
+from pymongo import MongoClient, UpdateOne, InsertOne
 import logging
 
 logging.basicConfig(level=logging.INFO)
@@ -116,6 +117,108 @@ class ListGlb500Year:
 
 
 # ------------------------------------------------------------------------------
+class ListIsc100Year:
+
+    ###
+    def __init__(self, year):
+        self.__tag = "isc100"
+        self.__tag_mark = "isc"
+        self.__year = year
+        self.__tree = {}
+
+    def load(self, tree):
+        for node in tree:
+            tmp = {
+                node["name_fr"]: {
+                    "usn": node["usn"],
+                }
+            }
+            self.__tree.update(tmp)
+
+        return
+
+    @property
+    def mark(self):
+        return self.__tag_mark
+
+    @property
+    def size(self):
+        return len(self.__tree)
+
+    @property
+    def tag(self):
+        return self.__tag
+
+    @property
+    def tree(self):
+        return self.__tree
+
+    @property
+    def year(self):
+        return self.__year
+
+    @year.setter
+    def year(self, year):
+        if type(year) == str:
+            self.__year = year
+        else:
+            raise TypeError("string expected such as 'y2024'.")
+        return
+
+
+# ------------------------------------------------------------------------------
+class ListPLC:
+
+    ###
+    def __init__(self, year):
+        self.__tag = "plc"
+        self.__tag_mark = "plc"
+        # self.__tag_mark = {"plc":"chn-mainland", "lcx":{} }
+        self.__year = year
+        self.__tree = {}
+
+    def load(self, tree):
+        for node in tree:
+            tmp_node = {
+                node["name_fr"]: {
+                    "eff_date": node["eff_date"],
+                    "exp_date": node["exp_date"],
+                    "region": node["region"],
+                }
+            }
+            self.__tree.update(tmp_node)
+
+        return
+
+    @property
+    def mark(self):
+        return self.__tag_mark
+
+    @property
+    def size(self):
+        return len(self.__tree)
+
+    @property
+    def tag(self):
+        return self.__tag
+
+    @property
+    def tree(self):
+        return self.__tree
+
+    @property
+    def year(self):
+        return self.__year
+
+    @year.setter
+    def year(self, year):
+        if type(year) == str:
+            self.__year = year
+        else:
+            raise TypeError("string expected such as 'y2024'.")
+
+
+# ------------------------------------------------------------------------------
 class ListSOE:
 
     ###
@@ -129,6 +232,8 @@ class ListSOE:
         for node in tree:
             tmp_node = {node["organization_fr"]: {}}
             self.__tree.update(tmp_node)
+
+        return
 
     @property
     def mark(self):
@@ -181,29 +286,17 @@ class Organization:
                     "hierarchy_psn": node["hierarchy_psn"],
                     "category": node["category"],
                     "root_node": {},  # {"sn": "xxx", "name_fr": "xxx"}
+                    "nht_period": node["nht_period"],
                     "child": {},
                     "glb500": {},
                     "chn500": {},
                     "soe": {},
+                    "plc": {},
+                    "nht": {},
+                    "isc100": {},
                 }
             }
             self.__tree.update(tmp_node)
-
-    ###
-    # def copy_tag(self, list):
-    #     for node in list.tree:
-    #         for key in self.__tree:
-    #             if key == node:
-    #                 self.__tree[key][list.tag][list.year] = list.tree[node][list.tag][
-    #                     list.year
-    #                 ]
-
-    ###
-    # def copy_root_node(self, list):
-    #     for node in list.tree:
-    #         for key in self.__tree:
-    #             if key == node:
-    #                 self.__tree[key]["root_node"] = list.tree[node]["root_node"]
 
     ###
     def set_h(self):
@@ -231,6 +324,43 @@ class Organization:
 
         for child in self.__tree[node]["child"]:
             self.set_root_node(child, root_node)
+
+        return
+
+    ### set tag nht (national high-tech)
+    def set_tag_nht(self, year):
+
+        if int(year[1:]) <= 2000:
+            logging.warning(
+                "'y' followed by 4-digit year is expected. e.g., 'y2024'. set tag nht skipped."
+            )
+            return
+
+        ydate = date.fromisoformat(year[1:] + "0101")
+        for node, value in self.__tree.items():
+
+            tmp_node = {year: "nil"}
+            for eff_date, exp_date in value["nht_period"].items():
+                if eff_date != "":
+                    if (date.fromisoformat(eff_date) <= ydate) and (
+                        ydate <= date.fromisoformat(exp_date)
+                    ):
+                        tmp_node = {year: "nht"}
+            value["nht"].update(tmp_node)
+
+        #
+        for node, value in self.__tree.items():
+            psn = str(value["hierarchy_psn"])
+            if (psn == "") or (
+                psn == "0"
+            ):  # set as "nf04" if it is not in the list of xx.
+                self.__set_tag_xx_child(
+                    node,
+                    "nht",
+                    "nht",
+                    year,
+                    value["nht"].get(year, ""),
+                )
 
         return
 
@@ -298,13 +428,24 @@ class Organization:
     ###
     def __set_tag_xx_child(self, node, tag_xx, mark_xx, year, mark):
 
-        if (mark != mark_xx) and (mark != ("[" + mark_xx + "]")):
-            self.__tree[node][tag_xx][year] = "nf04"
-        elif self.__tree[node][tag_xx].get(year, "") != mark_xx:
-            tmp_node = {year: mark}
-            self.__tree[node][tag_xx].update(tmp_node)
+        # if (self.__tree[node]["root_node"]["sn"] == "bcz") and (
+        #     (tag_xx == "plc") or (tag_xx == "soe")
+        # ):
+        #     print(
+        #         f">>>tag={tag_xx}. node={node}, value={self.__tree[node]}, mark={mark}"
+        #     )
 
-        mark_for_child = self.__tree[node][tag_xx][year]
+        value = self.__tree[node][tag_xx]
+        if value.get(year, "") != mark_xx:
+
+            if (mark != mark_xx) and (mark != ("[" + mark_xx + "]")):
+                tmp_node = {year: "nf04"}
+            else:
+                tmp_node = {year: "[" + mark_xx + "]"}
+
+            value.update(tmp_node)
+
+        mark_for_child = value[year]
         if mark_for_child == mark_xx:
             mark_for_child = "[" + mark_xx + "]"
         for child in self.__tree[node]["child"]:
@@ -690,20 +831,6 @@ def collection_copy(collection_to, collection_from, field_mapping_to_from):
 
 if __name__ == "__main__":
 
-    """
-    logging.info(
-        "copy collection. {'collection_to': 'tag_org_chn500', 'collection_from': 'organization}"
-    )
-
-    field_mapping = {
-        "sn": "sn",
-        "name_fr": "name_fr",
-        "hierarchy_psn": "hierarchy_psn",
-    }
-    collection_copy("tag_org_chn500", "organization", field_mapping)
-    logging.info("copied.")
-    """
-
     gd_client = MongoClient()
     gd_db = gd_client["remai"]
 
@@ -714,37 +841,6 @@ if __name__ == "__main__":
     list_chn500_y2023.load(tmp_list)
     logging.info("loaded.")
 
-    # print("size=%d" % list_chn500_y2023.size)
-    # print(list_chn500_y2023.year)
-    # print(list_chn500_y2023.tree)
-
-    # tag_org_chn500 = TagOrgChn500("y2023")
-    # logging.info("loading from db. {'collection': 'tag_org_chn500'}")
-    # tmp_list = gd_db.get_collection("tag_org_chn500").find()
-    # tag_org_chn500.load(tmp_list)
-    # logging.info("loaded.")
-
-    # tag_org_chn500.set_tag_chn500(list_chn500_y2023.tree)
-
-    # for node, value in tag_org_chn500.tree.items():
-    #     psn = str(value.get("hierarchy_psn"))
-    #     if (psn == "0") or (psn == ""):
-    #         print("-" * 36)
-    #         tag_org_chn500.show_h(node)
-    # print("-" * 36)
-    # tag_org_chn500.show_h("asx")
-    # print("-" * 36)
-    # tag_org_chn500.show_h("aue")
-    # print("-" * 36)
-    # tag_org_chn500.show_h("aso")
-    # print("-" * 36)
-    # tag_org_chn500.show_h("bcz")
-    # print("-" * 36)
-    # tag_org_chn500.show_h("a5g")
-    # print("-" * 36)
-    # tag_org_chn500.show_h("aa4")
-    # print("-" * 36)
-    # tag_org_chn500.show_h("asn")
     sn_to_check = {
         "asx": {},
         "aue": {},
@@ -754,6 +850,7 @@ if __name__ == "__main__":
         "aa4": {},
         "asn": {},
         "avp": {},
+        "aw1": {},
     }
 
     # for node in sn_to_check:
@@ -806,6 +903,26 @@ if __name__ == "__main__":
         if (psn == "0") or (psn == ""):
             organization.set_root_node(node, node)
 
+    logging.info("set tag nht to organization.")
+    # for node, value in organization.tree.items():
+    #     print(f">>>organization::node={node}, value={value}")
+    organization.set_tag_nht("y2023")
+    logging.info("set done.")
+
+    print("-" * 36)
+    print("check value of organization")
+    for node in sn_to_check:
+        print("-" * 36)
+        print(f"sn={node}, value={organization.tree[node]}")
+
+    print("-" * 36)
+    print(f"check value of organization. tag='nht'")
+    for node in sn_to_check:
+        print("-" * 36)
+        organization.show_h(node, "nht", "y2023")
+    ###
+    # sys.exit()
+
     ###
     list_soe_y2023 = ListSOE("y2023")
     logging.info("loading from db. {'collection': 'list_soe'}")
@@ -819,6 +936,16 @@ if __name__ == "__main__":
     tmp_list = gd_db.get_collection("list_glb500_y2023").find()
     list_glb500_y2023.load(tmp_list)
     logging.info("loaded.")
+
+    ###
+    list_plc = ListPLC("y2023")
+    logging.info("loading from db. {'collection': 'list_plc'}")
+    tmp_list = gd_db.get_collection("list_plc").find()
+    list_plc.load(tmp_list)
+    logging.info("loaded.")
+
+    # for key, value in list_plc.tree.items():
+    #     print(f"name={key}, value={value}.")
 
     ###
     logging.info(
@@ -841,6 +968,36 @@ if __name__ == "__main__":
     organization.set_tag_xx(list_glb500_y2023)
     logging.info("set done.")
 
+    ###
+    logging.info(
+        f"setting tag({list_plc.tag}) of year({list_plc.year}) to organization..."
+    )
+    organization.set_tag_xx(list_plc, 0)
+
+    # organization.set_tag_xx(list_plc)
+    logging.info("set done.")
+
+    ###
+    logging.info(f"loading from db. collection = list_isc100_y2023.")
+
+    gr_year = "y2023"
+    tmp_list = ListIsc100Year(gr_year)
+    tmp = gd_db.get_collection("list_isc100_" + gr_year).find()
+    tmp_list.load(tmp)
+
+    logging.info("loaded.")
+
+    logging.info(
+        f"setting tag({tmp_list.tag}) of year({tmp_list.year}) to organization..."
+    )
+    organization.set_tag_xx(tmp_list)
+    logging.info("set done.")
+
+    print(f">>> check organization. tag={tmp_list.tag}, year={tmp_list.year}")
+    for node, value in organization.tree.items():
+        if value[tmp_list.tag][tmp_list.year] != "nf04":
+            print(f"node={node}, value={value}")
+
     # logging.info(
     #     f"copy tag ({tag_org_chn500.tag}, {tag_org_chn500.year}) + root_node from 'tag_org_chn500' to 'organization'"
     # )
@@ -855,23 +1012,28 @@ if __name__ == "__main__":
         print(f"sn={node}, value={organization.tree[node]}")
 
     print("-" * 36)
-    print("check value of organization")
-    for node in sn_to_check:
-        print("-" * 36)
-        organization.show_h(node, "soe", "y2023")
-
-    print("-" * 36)
-    print("check value of organization")
-    for node in sn_to_check:
-        print("-" * 36)
-        organization.show_h(node, "chn500", "y2023")
-
-    print("-" * 36)
     print(f"check value of organization. tag={list_glb500_y2023.tag}")
+    # for node in sn_to_check:
+    #     print("-" * 36)
+    #     organization.show_h(node, list_glb500_y2023.tag, "y2023")
+
+    print("-" * 36)
+    print(f"check value of organization. tag={list_chn500_y2023.tag}")
+    # for node in sn_to_check:
+    #     print("-" * 36)
+    #     organization.show_h(node, list_chn500_y2023.tag, "y2023")
+
+    print("-" * 36)
+    print(f"check value of organization. tag={list_soe_y2023.tag}")
+    # for node in sn_to_check:
+    #     print("-" * 36)
+    #     organization.show_h(node, list_soe_y2023.tag, "y2023")
+
+    print("-" * 36)
+    print(f"check value of organization. tag={list_plc.tag}")
     for node in sn_to_check:
         print("-" * 36)
-        organization.show_h(node, list_glb500_y2023.tag, "y2023")
-
+        organization.show_h(node, list_plc.tag, "y2023")
     ###
 
     """
@@ -932,7 +1094,14 @@ if __name__ == "__main__":
 
     #
     logging.info("copying tags ...")
-    student_y2023.post2db_tags = {"glb500": {}, "chn500": {}, "soe": {}}
+    student_y2023.post2db_tags = {
+        "glb500": {},
+        "chn500": {},
+        "soe": {},
+        "plc": {},
+        "nht": {},
+        "isc100": {},
+    }
     student_y2023.copy_tag_xx(organization)
     logging.info("copied.")
 
@@ -973,6 +1142,86 @@ if __name__ == "__main__":
 
     logging.info(">>> END <<<")
 
+    ### collection copy
+    """
+    logging.info(
+        "copy collection. {'collection_to': 'tag_org_chn500', 'collection_from': 'organization}"
+    )
+
+    field_mapping = {
+        "sn": "sn",
+        "name_fr": "name_fr",
+        "hierarchy_psn": "hierarchy_psn",
+    }
+    collection_copy("tag_org_chn500", "organization", field_mapping)
+    logging.info("copied.")
+    """
+
+    ### import nht
+    """
+    logging.info("loading from db. collection = nht_eff_exp.")
+    tmp_list = gd_db.get_collection("nht_eff_exp").find()
+    logging.info("loaded.")
+    for node in tmp_list:
+        tmp_date = node["eff_date1"]
+        eff_date1 = ""
+        if tmp_date != "":
+            eff_date1 = date.fromisoformat(tmp_date)
+        print(
+            f"node={node},eff_date1={eff_date1}, tmp_date={tmp_date}, exp_date={node['exp_date1']}"
+        )
+    """
+
+    """
+    logging.info("loading from db. collection = nht_eff_exp.")
+    tmp_list = gd_db.get_collection("nht_eff_exp").find()
+    bulk_operations = []
+    for node in tmp_list:
+        tmp_node = {"sn": node["sn"], "name": node["name"], "nht_period": {}}
+        if node["eff_date1"] != "":
+            tmp_period = {node["eff_date1"]: node["exp_date1"]}
+            # tmp_period = {
+            #     date.fromisoformat(node["eff_date1"]): date.fromisoformat(
+            #         node["exp_date1"]
+            #     )
+            # }
+            tmp_node["nht_period"].update(tmp_period)
+        if node["eff_date2"] != "":
+            # tmp_period = {
+            #     date.fromisoformat(node["eff_date2"]): date.fromisoformat(
+            #         node["exp_date2"]
+            #     )
+            # }
+            tmp_period = {node["eff_date2"]: node["exp_date2"]}
+            tmp_node["nht_period"].update(tmp_period)
+
+        bulk_operations.append(InsertOne(tmp_node))
+
+    result = gd_db.get_collection("tmp_nht").bulk_write(bulk_operations)
+    logging.info(f"{result.inserted_count} documents inserted.")
+    logging.info("inserted.")
+    """
+
+    """
+    logging.info("loading from db. collection = tmp_nht.")
+    tmp_list = gd_db.get_collection("tmp_nht").find()
+    logging.info("update collection. collection = organization.")
+    bulk_operations = []
+    for node in tmp_list:
+        bulk_operations.append(
+            UpdateOne(
+                {"sn": node["sn"]},
+                {"$set": {"nht_period": node["nht_period"]}},
+            )
+        )
+
+    result = gd_db.get_collection("organization").bulk_write(bulk_operations)
+    logging.info(
+        f"Matched {result.matched_count} documents and modified {result.modified_count} documents."
+    )
+    logging.info("updated.")
+    """
+
 ### --------------------------------------------------------------------------------------------------------------------
 ### import data
 ### --------------------------------------------------------------------------------------------------------------------
@@ -980,4 +1229,10 @@ if __name__ == "__main__":
 """
 mongoimport -d remai -c list_chn500_y2023 --type=csv --headerline ~/mdb8/inf-data/list_chn500_y2023.csv
 mongoimport -d remai -c list_soe --type=csv --headerline ~/mdb8/inf-data/list_soe.csv
+mongoimport -d remai -c list_plc --type=csv --headerline ~/mdb8/inf-data/list_plc.csv
+mongoimport -d remai -c nht_eff_exp --type=csv --headerline ~/mdb8/inf-data/nht_eff_exp.csv
+mongoimport -d remai -c list_isc100_y2023 --type=csv --headerline ~/mdb8/inf-data/list_isc100_y2023.csv
+mongoimport -d remai -c list_fic500_all_y2023 --type=csv --headerline ~/mdb8/inf-data/list_fic500_all_y2023.csv
+mongoimport -d remai -c list_fic500_mfg_y2023 --type=csv --headerline ~/mdb8/inf-data/list_fic500_mfg_y2023.csv
+mongoimport -d remai -c list_fic100_svc_y2023 --type=csv --headerline ~/mdb8/inf-data/list_fic100_svc_y2023.csv
 """

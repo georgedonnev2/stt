@@ -1,0 +1,66 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    display: grid;
+    grid-template-columns: repeat(16, 1fr);
+    gap: 8px;
+}
+
+header {
+    grid-row:1;
+}
+
+main {
+    grid-column: 2 / span 14;
+    grid-row: 2;
+
+    display: grid;
+    grid-template-columns: subgrid;
+
+    * {
+        grid-row: 1;
+        grid-column: 1 / span 14;
+    }
+
+    /* width: 300px; */
+    /* height: 300px; */
+    height: 100vh;
+
+    /* display: flex;
+    flex-direction: column; */
+
+    position: relative;
+    overflow-y: scroll;
+
+    border: 2px solid red;
+}
+
+.container {
+    grid-row: 2;
+}
+
+.box {
+    /* width: 100px; */
+    height: 100px;
+
+    border: 2px solid black;
+}
+.box1 {
+    background-color: red;
+}
+
+aside {
+    grid-column: 13 / span 2;
+
+    position: sticky;
+    top: 100px;
+
+    /*模式是scretch，就是和main内容一样高，就无法sticky了。要设置为 start */
+    align-self: start; 
+
+    background-color: #eee;
+}
