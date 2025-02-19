@@ -1,3 +1,21 @@
-{'东方通信':{'usn': '', 'code': {'900941': {'region': 'chn-mainland', 'section': '沪市主板', 'eff_date': '', 'exp_date': '',
-'doc_ops': {}}, '600776': {'region': 'chn-mainland', 'section': '沪市主板', 'eff_date': '', 'exp_date': '', 'doc_ops':
-{}}}}}
+{
+    "东方通信": {
+        "usn": "",
+        "code": {
+            "900941": {
+                "region": "chn-mainland",
+                "section": "沪市主板",
+                "eff_date": "",
+                "exp_date": "",
+                "doc_ops": {}
+            },
+            "600776": {
+                "region": "chn-mainland",
+                "section": "沪市主板",
+                "eff_date": "",
+                "exp_date": "",
+                "doc_ops": {}
+            }
+        }
+    }
+}

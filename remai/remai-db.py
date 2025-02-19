@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from datetime import date, datetime, timedelta, timezone
+import pandas as pd
 import random
 import sys
 from pymongo import MongoClient, UpdateOne, InsertOne
@@ -1665,10 +1666,286 @@ class StudentYearDB(RemaiTreeDB):
         return __tag_copied
 
 
+# ------------------------------------------------------------------------------
+#
+# ------------------------------------------------------------------------------
+class UploadStudentYear:
+
+    #
+    def __init__(self, year):
+        self.__year = year
+        self.__coll = "student_" + year + "_" + datetime.now().strftime("%Y%m%d%H%M")
+        self.__fpath = ""
+        self.__tree = {}
+
+    #
+    def loadf(self, list_std):
+
+        count = 0
+        for std in list_std:
+            s = {}
+
+            # set degree_year
+            degree_year = ""
+            if std["学历层次"] in ["二学位毕业", "本科生毕业"]:
+                degree_year = "bachelor"
+            elif std["学历层次"] == "硕士生毕业":
+                degree_year = "master"
+            elif std["学历层次"] == "博士生毕业":
+                degree_year = "doctor"
+
+            if degree_year == "":
+                raise ValueError(
+                    "学号={std['学号']}的学历层次取值有误，期望是'二学位毕业,'本科生毕业','硕士生毕业','博士生毕业'。"
+                )
+            else:
+                degree_year += "-" + self.year  # -， not _
+
+            # set path_fr
+            if f"{std['毕业去向类别代码']:.0f}" in [
+                "10",
+                "11",
+                "12",
+                "46",
+                "76",
+                "271",
+                "502",
+                "503",
+                "512",
+                "519",
+            ]:
+                path_fr = "got-job"
+            elif f"{std['毕业去向类别代码']:.0f}" in ["85", "801", "802"]:
+                path_fr = "further-study"
+            else:
+                raise ValueError(
+                    "学号={std['学号']}的'毕业去向类别代码'取值有误，期望是'10,11,12,271,46,502,503,512,519,76,801,802,85'。"
+                )
+
+            # 10	签就业协议形式就业
+            # 11	签劳动合同形式就业
+            # 12	其他录用形式就业
+            # 46	应征义务兵
+            # 76	自由职业
+            # 85	境外留学
+            # 271	科研助理、管理助理—科研助理、管理助理
+            # 502	国家基层项目—三支一扶
+            # 503	国家基层项目—西部计划
+            # 512	地方基层项目—地方选调生
+            # 519	地方基层项目—其他地方基层项目
+            # 801	境内升学—研究生
+            # 802	境内升学—第二学士学位
+
+            s[f"{std['学号']:.0f}"] = {
+                "organization_fr": std["单位名称"],
+                "name": std["姓名"],
+                "degree_year": degree_year,
+                "path_fr": path_fr,
+                "egc_tagx": {},
+                "usn": "",
+                "category": "",
+                "root_node": {},
+                "doc_ops": {},
+            }
+
+            self.tree.update(s)
+            count += 1
+            # print(f"#{count}, s={s}")
+
+            # self.tree[docx["sid"]] = {
+            #     "organization_fr": docx["organization_fr"],
+            #     "name": docx["name"],
+            #     "degree_year": docx["degree_year"],
+            #     "path_fr": docx["path_fr"],
+            #     "egc_tagx": docx.get("egc_tagx", {}),
+            #     "usn": docx.get("usn", ""),
+            #     "category": docx.get("category", ""),
+            #     "root_node": docx.get("root_node", {}),
+            #     "doc_ops": docx.get("doc_ops", {}),
+            # }
+
+            #     "学号",
+            #     "姓名",
+            #     "性别",
+            #     "生源地名称",
+            #     "生源地代码",
+            #     "民族名称",
+            #     "政治面貌",
+            #     "城乡生源",
+            #     "学历层次",
+            #     "专业名称",
+            #     "专业方向",
+            #     "专业代码",
+            #     "入学年月",
+            #     "毕业日期",
+            #     "培养方式",
+            #     "委培单位",
+            #     "学习形式",
+            #     "毕业去向类别代码",
+            #     "毕业去向",
+            #     "签约日期",
+            #     "单位名称",
+            #     "统一社会信用代码",
+            #     "留学院校外文名称",
+            #     "单位性质代码",
+            #     "单位性质",
+            #     "单位行业代码",
+            #     "单位行业",
+            #     "单位所在地代码",
+            #     "单位所在地",
+            #     "单位地址",
+            #     "工作职位类别代码",
+            #     "工作职位类别",
+            # ],
+        return count
+
+    ### post to db
+    def post(self):
+
+        client = MongoClient()
+        db = client.get_database("remai")
+
+        bulk_ops = []
+        for kx, vx in self.tree.items():
+
+            bulk_ops.append(
+                InsertOne(
+                    {
+                        "sid": kx,
+                        "organization_fr": vx["organization_fr"],
+                        "name": vx["name"],
+                        "degree_year": vx["degree_year"],
+                        "path_fr": vx["path_fr"],
+                        "egc_tagx": vx["egc_tagx"],
+                        "usn": vx["usn"],
+                        "category": vx["category"],
+                        "root_node": vx["root_node"],
+                        # specify field to be updated with '.' chain to avoid wrong overide.
+                        "doc_ops": {
+                            "update_by": "back-end-gdv2",
+                            "update_time": datetime.now(),
+                            "create_by": "back-end-gdv2",
+                            "creat_time": datetime.now(),
+                        },
+                    },
+                )
+            )
+
+        if len(bulk_ops) > 0:
+            bulk_ops_result = db.get_collection(self.coll).bulk_write(bulk_ops)
+
+            result = {"bulk_ops": 1, "result": bulk_ops_result}
+        else:
+            result = {"bulk_ops": 0, "result": ""}
+
+        client.close()
+
+        return result
+
+    @property
+    def coll(self):
+        return self.__coll
+
+    @property
+    def fpath(self):
+        return self.__fpath
+
+    @fpath.setter
+    def fpath(self, fpath):
+        self.__fpath = fpath
+        return
+
+    @property
+    def tree(self):
+        return self.__tree
+
+    @property
+    def year(self):
+        return self.__year
+
+
 ### --------------------------------------------------------------------------------------------------------------------
 ### tools
 ### --------------------------------------------------------------------------------------------------------------------
 #
+
+
+###
+def upload_frxx(yearx):
+
+    upload_student = UploadStudentYear(yearx)
+    print(f"{upload_student.coll}::year={upload_student.year}")
+
+    choice = input("Excel file path to upload to db (/path/to/file): ")
+    upload_student.fpath = choice
+
+    #
+    logging.info(f"get student information from file: {upload_student.fpath}")
+    df = pd.read_excel(
+        upload_student.fpath,
+        usecols=[
+            "学号",
+            "姓名",
+            "性别",
+            "生源地名称",
+            "生源地代码",
+            "民族名称",
+            "政治面貌",
+            "城乡生源",
+            "学历层次",
+            "专业名称",
+            "专业方向",
+            "专业代码",
+            "入学年月",
+            "毕业日期",
+            "培养方式",
+            "委培单位",
+            "学习形式",
+            "毕业去向类别代码",
+            "毕业去向",
+            "签约日期",
+            "单位名称",
+            "统一社会信用代码",
+            "留学院校外文名称",
+            "单位性质代码",
+            "单位性质",
+            "单位行业代码",
+            "单位行业",
+            "单位所在地代码",
+            "单位所在地",
+            "单位地址",
+            "工作职位类别代码",
+            "工作职位类别",
+        ],
+    )
+    # req_column = df[["姓名","学号"]]
+
+    # list of dict, some key-value pairs in each dict.
+    # e.g., {'学号': 7201607003, '姓名': '谢润山', '性别': '男',...}.
+
+    ll = df.to_dict(orient="records")
+    count = upload_student.loadf(ll)
+    logging.info(f"{count} student(s) ready to update to db.")
+
+    # count = 1
+    # for sid, value in upload_student.tree.items():
+    #     print("-" * 36)
+    #     print(f"#{count}::sid={sid}, v={value}")
+    #     count +=1
+
+    # post to db
+    logging.info(f"{upload_student.coll}::post to db.")
+    result = upload_student.post()
+    # bulk_ops_result.inserted_count
+    logging.info(
+        f"{upload_student.coll}::{result['result'].inserted_count} posted to db."
+    )
+
+    logging.info("*" * 36)
+    logging.info(
+        f"next step:: rename collection '{upload_student.coll} to {'student_' + upload_student.year}."
+    )
+    return
 
 
 def show_kvp(listx):
@@ -1923,15 +2200,6 @@ def set_usn(yearx):
 
     # print(f"yearx={yearx},yearx[1:]={yearx[1:]}")
 
-    if isinstance(yearx, str) is False:
-        raise TypeError("string expected. e.g., 'y2024'(' not included, y2024 only)")
-        return
-    elif (len(yearx) != 5) or (not yearx[1:].isdigit()):
-        raise ValueError(
-            "y followed by 4-digit year expected. e.g., 'y2024'(' not included, y2024 only)"
-        )
-        return
-
     ###
     print("*" * 36)
     organization = OrganizationDB(yearx)
@@ -2095,6 +2363,9 @@ def wash_data(yearx):
 ###
 def main():
 
+    # upload_frxx()
+    # return
+
     # set_tag("y2023")
     # return
 
@@ -2103,26 +2374,39 @@ def main():
         print("Welcome to Remai. Make a choice:")
         print("=" * 36)
         print("1. set tags for organization")
-        print("2. tbd")
+        print("2. upload excel to db.")
         print("3. copy field 'usn' from 'organization')")
         print("4. wash data")
         print("=" * 36)
 
-        choice = input("Your choice(1/2/3/4): ")
+        choice = input("Your choice(1/2/3/4, q=quit): ")
+        yearx = input("Input year (y followed by 4-digit, e.g. y2024): ")
+        if isinstance(yearx, str) is False:
+            raise TypeError(
+                "string expected. e.g., 'y2024'(' not included, y2024 only)"
+            )
+            return
+        elif (len(yearx) != 5) or (not yearx[1:].isdigit()):
+            raise ValueError(
+                "y followed by 4-digit year expected. e.g., 'y2024'(' not included, y2024 only)"
+            )
+            return
 
         if choice == "1":
-            yearx = input("Input year (y followed by 4-digit, e.g. y2024): ")
             set_tag(yearx)
 
+        if choice == "2":
+            upload_frxx(yearx)
+
         if choice == "3":
-            yearx = input("Input year (y followed by 4-digit, e.g. y2024): ")
             set_usn(yearx)
 
         elif choice == "4":
-            yearx = input("Input year (y followed by 4-digit, e.g. y2024): ")
             wash_data(yearx)
 
-    logging.info(">>> The End <<<")
+        elif choice in ["q", "Q"]:
+            logging.info(">>> The End <<<")
+            return
 
 
 ###
@@ -2232,8 +2516,12 @@ db.bk_organization_250211.aggregate([
 """
 # delimiter is tab instead of comma, which will be good for exporting field 'h_comments' -- 不支持哈
 
-mongoexport --db remai --collection organization --type=csv --out=export-organization-250212.csv --fields=usn,name,name_fr,category,h_psn,root_node.usn,root_node.name_fr,nht_period,egc_tagx.glb500.y2023
+mongoexport --db remai --collection organization --type=csv --out=export-organization-250215.csv --fields=usn,name,name_fr,category,h_psn,root_node.usn,root_node.name_fr,nht_period,egc_tagx.glb500.y2023,egc_tagx.chn500.y2023,egc_tagx.soe.y2023,egc_tagx.plc.y2023,egc_tagx.nht.y2023,egc_tagx.isc100.y2023,egc_tagx.fic500_all.y2023,egc_tagx.fic500_mfg.y2023,egc_tagx.fic100_svc.y2023,h_comments
 
 mongoexport --db remai --collection organization --type=json --out=export-organization-250213.json --fields=usn,name,name_fr,category,h_psn,root_node.usn,root_node.name_fr,nht_period,egc_tagx.glb500.y2023,h_comments
 
 """
+
+
+##
+# 250219：y2024， 第2次运行，organization 也被全部更新了。期望：是不必更新db的。待查bug。
