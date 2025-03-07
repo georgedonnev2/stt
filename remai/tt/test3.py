@@ -5,6 +5,81 @@ from datetime import datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
 import random
 
+f1 = 1.534
+print(f"v={f1}, t={type(f1)}")
+f2 = round(f1, 2)
+print(f"v={f2}, t={type(f2)}")
+f2 = round(f1, 0)
+print(f"v={f2}, t={type(f2)}")
+f2 = int(round(f1, 0))
+print(f"v={f2}, t={type(f2)}")
+# map_db_f = {
+#     "name": {"file": "name", "key": True},
+#     "rank": {"file": "rank", "format": "int"},
+#     "revenue": {"file": "revenue", "format": "float2"},
+#     "profit": {"file": "profit", "format": "float1"},
+# }
+
+# list_xls = [
+#     {"name": "com-a", "rank": "1", "revenue": "123.4", "profit": 111},
+#     {"name": "com-b", "rank": 2, "revenue": 345.6, "profit": 222},
+# ]
+
+# fmt = {"int": "f'{xls[v[\"file\"]]:d}'"}
+# print(f"int={fmt['int']}")
+
+# tmp = {}
+
+# for xls in list_xls:
+#     tmp_v = {}
+#     tmp_k = ""
+#     for k, v in map_db_f.items():
+#         if v.get("format", "") not in ["str", "int", "float", "float1", "float2", ""]:
+#             raise ValueError("str /int /float /float1 /float2 expected.")
+
+#         print(f"type(xls[v['file']]={type(xls[v['file']])}")
+
+#         if v.get("key", "") == True:
+
+#             match v.get("format", ""):
+#                 case "int":
+#                     tmp_k = (
+#                         int(xls[v["file"]])
+#                         if type(xls[v["file"]]) == str
+#                         else xls[v["file"]]
+#                     )
+#                 case "float":
+#                     tmp_k = f"{xls[v['file']]:.0f}"
+#                 case "float1":
+#                     tmp_k = f"{xls[v['file']]:.1f}"
+#                 case "float2":
+#                     tmp_k = f"{xls[v['file']]:.2f}"
+#                 case "str":
+#                     tmp_k = f"{xls[v['file']]}"
+#                 case "":
+#                     tmp_k = xls[v["file"]]
+
+#         else:
+#             match v.get("format", ""):
+#                 case "int":
+#                     tmp_v[k] = int(f"{xls[v['file']]:d}")
+#                 case "float":
+#                     tmp_v[k] = f"{xls[v['file']]:.0f}"
+#                 case "float1":
+#                     tmp_v[k] = f"{xls[v['file']]:.1f}"
+#                 case "float2":
+#                     tmp_v[k] = f"{xls[v['file']]:.2f}"
+#                 case "str":
+#                     tmp_v[k] = f"{xls[v['file']]}"
+#                 case "":
+#                     tmp_v[k] = xls[v["file"]]
+
+#     print(f"tmp_v={tmp_v}")
+#     tmp.update({tmp_k: tmp_v})
+
+# print(f"tmp={tmp}")
+
+
 # now = datetime.now()
 # print("now =", now)
 # print("type(now) =", type(now))
@@ -139,94 +214,94 @@ df = pd.read_excel(excel_path)
 
 # 打印所有工作表的名称
 # print(df)
-print(f"shape={df.shape}")
-for index, row in df.iterrows():
-    for col in df.columns:
-        print(f"Row {index}, Column {col}: {row[col]}")
+# print(f"shape={df.shape}")
+# for index, row in df.iterrows():
+#     for col in df.columns:
+#         print(f"Row {index}, Column {col}: {row[col]}")
 
 
-excel_path = "【爱企查】华为技术有限公司股东信息.xlsx"
-df = pd.read_excel(excel_path)
-print(f"shape={df.shape}")
-for index, row in df.iterrows():
-    for col in df.columns:
-        print(f"Row {index}, Column {col}: {row[col]}")
+# excel_path = "【爱企查】华为技术有限公司股东信息.xlsx"
+# df = pd.read_excel(excel_path)
+# print(f"shape={df.shape}")
+# for index, row in df.iterrows():
+#     for col in df.columns:
+#         print(f"Row {index}, Column {col}: {row[col]}")
 
 
-# 读取 .xls 文件
-xls_file_path = "【爱企查】深圳市腾讯计算机系统有限公司工商注册信息.xls"
-# df = pd.read_excel(xls_file_path, engine="openpyxl")  # 使用 'xlrd' 引擎读取 .xls 文件
-df = pd.read_excel(xls_file_path, engine="xlrd")  # 使用 'xlrd' 引擎读取 .xls 文件
-print(f"shape={df.shape}")
-for index, row in df.iterrows():
-    for col in df.columns:
-        print(f"Row {index}, Column {col}: {row[col]}")
+# # 读取 .xls 文件
+# xls_file_path = "【爱企查】深圳市腾讯计算机系统有限公司工商注册信息.xls"
+# # df = pd.read_excel(xls_file_path, engine="openpyxl")  # 使用 'xlrd' 引擎读取 .xls 文件
+# df = pd.read_excel(xls_file_path, engine="xlrd")  # 使用 'xlrd' 引擎读取 .xls 文件
+# print(f"shape={df.shape}")
+# for index, row in df.iterrows():
+#     for col in df.columns:
+#         print(f"Row {index}, Column {col}: {row[col]}")
 
 
-file_path = "/Users/george1442/gdpvt/work/jnu/rem/2024届就业方案导出-戴士焱-250217.xlsx"
-# df = pd.read_excel(xls_file_path, engine="openpyxl")  # 使用 'xlrd' 引擎读取 .xls 文件
-df = pd.read_excel(
-    file_path,
-    usecols=[
-        "学号",
-        "姓名",
-        "性别",
-        "生源地名称",
-        "生源地代码",
-        "民族名称",
-        "政治面貌",
-        "城乡生源",
-        "学历层次",
-        "专业名称",
-        "专业方向",
-        "专业代码",
-        "入学年月",
-        "毕业日期",
-        "培养方式",
-        "委培单位",
-        "学习形式",
-        "毕业去向类别代码",
-        "毕业去向",
-        "签约日期",
-        "单位名称",
-        "统一社会信用代码",
-        "留学院校外文名称",
-        "单位性质代码",
-        "单位性质",
-        "单位行业代码",
-        "单位行业",
-        "单位所在地代码",
-        "单位所在地",
-        "单位地址",
-        "工作职位类别代码",
-        "工作职位类别",
-    ],
-)  # 使用 'xlrd' 引擎读取 .xls 文件
-rows = 0
-columns = 0
-print(f"shape={df.shape}")
-req_columns = df[["学号", "姓名"]]
-print(f"req_columns={req_columns}")
-df_list_of_series = req_columns.iterrows()  # 这是一个生成器，产生 (index, Series) 对
-df_list_of_dicts = [
-    row.to_dict() for index, row in req_columns.iterrows()
-]  # 每行转换为字典
-print(f"df_list_of_dicts={df_list_of_dicts}")
-count = 1
-for ll in df_list_of_dicts:
-    print(f"#{count}::学号={ll['学号']},姓名={ll['姓名']}")
-    count += 1
+# file_path = "/Users/george1442/gdpvt/work/jnu/rem/2024届就业方案导出-戴士焱-250217.xlsx"
+# # df = pd.read_excel(xls_file_path, engine="openpyxl")  # 使用 'xlrd' 引擎读取 .xls 文件
+# df = pd.read_excel(
+#     file_path,
+#     usecols=[
+#         "学号",
+#         "姓名",
+#         "性别",
+#         "生源地名称",
+#         "生源地代码",
+#         "民族名称",
+#         "政治面貌",
+#         "城乡生源",
+#         "学历层次",
+#         "专业名称",
+#         "专业方向",
+#         "专业代码",
+#         "入学年月",
+#         "毕业日期",
+#         "培养方式",
+#         "委培单位",
+#         "学习形式",
+#         "毕业去向类别代码",
+#         "毕业去向",
+#         "签约日期",
+#         "单位名称",
+#         "统一社会信用代码",
+#         "留学院校外文名称",
+#         "单位性质代码",
+#         "单位性质",
+#         "单位行业代码",
+#         "单位行业",
+#         "单位所在地代码",
+#         "单位所在地",
+#         "单位地址",
+#         "工作职位类别代码",
+#         "工作职位类别",
+#     ],
+# )  # 使用 'xlrd' 引擎读取 .xls 文件
+# rows = 0
+# columns = 0
+# print(f"shape={df.shape}")
+# req_columns = df[["学号", "姓名"]]
+# print(f"req_columns={req_columns}")
+# df_list_of_series = req_columns.iterrows()  # 这是一个生成器，产生 (index, Series) 对
+# df_list_of_dicts = [
+#     row.to_dict() for index, row in req_columns.iterrows()
+# ]  # 每行转换为字典
+# print(f"df_list_of_dicts={df_list_of_dicts}")
+# count = 1
+# for ll in df_list_of_dicts:
+#     print(f"#{count}::学号={ll['学号']},姓名={ll['姓名']}")
+#     count += 1
 
-print("*" * 36)
-df_to_dict_of_values = df.to_dict(orient="records")
-print(f"df_to_dict_of_values={df_to_dict_of_values}")
-count = 1
-for student in df_to_dict_of_values:
-    print("-" * 36)
-    tmp = f"{student['单位行业代码']:.0f}"
-    print(f"#{count}::{student},{tmp},{student['单位所在地代码']:.0f}")
+# print("*" * 36)
+# df_to_dict_of_values = df.to_dict(orient="records")
+# print(f"df_to_dict_of_values={df_to_dict_of_values}")
+# count = 1
+# for student in df_to_dict_of_values:
+#     print("-" * 36)
+#     tmp = f"{student['单位行业代码']:.0f}"
+#     print(f"#{count}::{student},{tmp},{student['单位所在地代码']:.0f}")
 
-    count += 1
+#     count += 1
 # for index, row in df.iterrows():
 #     rows += 1
 #     # print(f"rows={rows}")
@@ -267,6 +342,27 @@ for student in df_to_dict_of_values:
 # # 永久配置
 # pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
 
-dtnow = datetime.now()
-dtnow_str = dtnow.strftime("%Y%m%d%H%M")
-print(f"dtnow={dtnow_str}")
+# dtnow = datetime.now()
+# dtnow_str = dtnow.strftime("%Y%m%d%H%M")
+# print(f"dtnow={dtnow_str}")
+
+
+# data = {
+#     "glb500": {"y2023": "nf-404"},
+#     "chn500": {"y2023": "nf-404"},
+#     "soe": {"y2023": "nf-404", "y2024": "nf-404"},
+#     "plc": {"y2023": "nf-404", "y2024": "nf-404"},
+#     "nht": {"y2023": "nht", "y2024": "nht"},
+#     "isc100": {"y2023": "nf-404"},
+#     "fic100_svc": {"y2023": "nf-404"},
+#     "fic500_all": {"y2023": "nf-404"},
+#     "fic500_mfg": {"y2023": "nf-404"},
+# }
+
+# # 创建一个新字典来存储只包含 'y2024' 键的条目
+# y2024_only_data = {
+#     key: {"y2024": value["y2024"]} for key, value in data.items() if "y2024" in value
+# }
+
+# # 打印结果
+# print(y2024_only_data)

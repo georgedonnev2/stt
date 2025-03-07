@@ -294,96 +294,6 @@ if __name__ == "__main__":
         f"e6::ip={robot_e6.ip}, socket_req={robot_e6.socket_req}, socket_rsp={robot_e6.socket_rsp}"
     )
 
-    ### mode
-    logging.info("-" *36)
-    command = "RobotMode()"
-    logging.info(f"e6::{command}")
-    result = robot_e6.send(command)
-    logging.info(f"robot::{command}={result}")
-
-    if result[1] == 4:
-        logging.info("e6::未使能")
-
-        command = "EnableRobot()"
-        logging.info(f"e6::{command}")
-        result = robot_e6.send(command)
-        logging.info(f"robot::{command}={result}")
-
-        # logging.info("-" *36)
-        command = "RobotMode()"
-        logging.info(f"e6::{command}")
-        result = robot_e6.send(command)
-        logging.info(f"robot::{command}={result}")
-
-        if result[1] == 5:
-            logging.info("e6::使能且空闲")
-
-    elif result[1] == 5:
-        logging.info("e6::使能且空闲")
-    # else:
-    #     return
-
-    
-    ### pose
-    logging.info("-" *36)
-    command = "GetPose()"
-    logging.info(f"e6::{command}")
-    result = robot_e6.send(command)
-    logging.info(f"robot::{command}={result}")
-    
-    logging.info("-" *36)
-    logging.info("sleep 2 seconds")
-    sleep(2)
-
-
-    # move 
-    for count in range(1,4):
-
-        print(" " *36)
-        logging.info(f">>> move #{count}")
-        print(" " *36)
-
-
-        logging.info("-" *36)
-        command = "MovL(pose={-127.1304,-133.2410,326.4057,-167.2325,35.4448,-73.3100})"
-        logging.info(f"e6::{command}")
-        result = robot_e6.send(command)
-        logging.info(f"robot::{command}={result}")
-
-        logging.info("-" *36)
-        logging.info("sleep 2 seconds")
-        sleep(2)
-
-        logging.info("-" *36)
-        command = "MovL(pose={-137.1304,-143.2410,326.4057,-167.2325,35.4448,-73.3100})"
-        logging.info(f"e6::{command}")
-        result = robot_e6.send(command)
-        logging.info(f"robot::{command}={result}")
-
-        logging.info("-" *36)
-        logging.info("sleep 2 seconds")
-        sleep(2)
-
-        # mode
-        logging.info("-" *36)
-        command = "RobotMode()"
-        logging.info(f"e6::{command}")
-        result = robot_e6.send(command)
-        logging.info(f"robot::{command}={result}")
-
-    # disable
-    logging.info("-" *36)
-    command = "DisableRobot()"
-    logging.info(f"e6::{command}")
-    result = robot_e6.send(command)
-    logging.info(f"robot::{command}={result}")
-
-    logging.info("-" *36)
-    command = "RobotMode()"
-    logging.info(f"e6::{command}")
-    result = robot_e6.send(command)
-    logging.info(f"robot::{command}={result}")
-
     # result = robot_e6.send("RobotMode()")
     # print(f"robot::RobotMode()={result}")
 
@@ -420,55 +330,59 @@ if __name__ == "__main__":
     # result = robot_e6.send(command)
     # print(f"robot::{command}={result}")
 
-
+    command = "GetPose()"
+    result = robot_e6.send(command)
+    print(f"robot::{command}={result}")
     # {-116.8459,-160.3124,323.4898,-178.1977,21.9300,-76.1754}
 
+    command = "RobotMode()"
+    result = robot_e6.send(command)
+    print(f"robot::{command}={result}")
 
+    for count in range(1, 10):
+        print(f"move #{count}")
+        command = "MovL(pose={-130.8459,-160.3124,323.4898,-178.1977,21.9300,-76.1754})"
+        result = robot_e6.send(command)
+        print(f"robot::{command}={result}")
 
-    # for count in range(1, 10):
-    #     print(f"move #{count}")
-    #     command = "MovL(pose={-130.8459,-160.3124,323.4898,-178.1977,21.9300,-76.1754})"
-    #     result = robot_e6.send(command)
-    #     print(f"robot::{command}={result}")
+        command = "MovL(pose={-116.8459,-160.3124,323.4898,-178.1977,21.9300,-76.1754})"
+        result = robot_e6.send(command)
+        print(f"robot::{command}={result}")
 
-    #     command = "MovL(pose={-116.8459,-160.3124,323.4898,-178.1977,21.9300,-76.1754})"
-    #     result = robot_e6.send(command)
-    #     print(f"robot::{command}={result}")
+    command = "MovL(pose={-130.8459,-160.3124,323.4898,-178.1977,21.9300,-76.1754})"
+    result = robot_e6.send(command)
+    print(f"robot::{command}={result}")
+    sleep(5)
+    command = "MovL(pose={-116.8459,-160.3124,323.4898,-178.1977,21.9300,-76.1754})"
+    result = robot_e6.send(command)
+    print(f"robot::{command}={result}")
+    # # sleep(5)
 
     # command = "MovL(pose={-130.8459,-160.3124,323.4898,-178.1977,21.9300,-76.1754})"
     # result = robot_e6.send(command)
     # print(f"robot::{command}={result}")
-    # sleep(5)
+    # # sleep(5)
     # command = "MovL(pose={-116.8459,-160.3124,323.4898,-178.1977,21.9300,-76.1754})"
     # result = robot_e6.send(command)
     # print(f"robot::{command}={result}")
-    # # # sleep(5)
+    # # sleep(5)
 
-    # # command = "MovL(pose={-130.8459,-160.3124,323.4898,-178.1977,21.9300,-76.1754})"
-    # # result = robot_e6.send(command)
-    # # print(f"robot::{command}={result}")
-    # # # sleep(5)
-    # # command = "MovL(pose={-116.8459,-160.3124,323.4898,-178.1977,21.9300,-76.1754})"
-    # # result = robot_e6.send(command)
-    # # print(f"robot::{command}={result}")
-    # # # sleep(5)
-
-    # # command = "MovL(pose={-130.8459,-160.3124,323.4898,-178.1977,21.9300,-76.1754})"
-    # # result = robot_e6.send(command)
-    # # print(f"robot::{command}={result}")
-    # # # sleep(5)
-    # # command = "MovL(pose={-116.8459,-160.3124,323.4898,-178.1977,21.9300,-76.1754})"
-    # # result = robot_e6.send(command)
-    # # print(f"robot::{command}={result}")
-    # # # sleep(5)
-
-    # command = "RobotMode()"
+    # command = "MovL(pose={-130.8459,-160.3124,323.4898,-178.1977,21.9300,-76.1754})"
     # result = robot_e6.send(command)
     # print(f"robot::{command}={result}")
-
-    # sleep(5)
-    # command = "RobotMode()"
+    # # sleep(5)
+    # command = "MovL(pose={-116.8459,-160.3124,323.4898,-178.1977,21.9300,-76.1754})"
     # result = robot_e6.send(command)
     # print(f"robot::{command}={result}")
+    # # sleep(5)
+
+    command = "RobotMode()"
+    result = robot_e6.send(command)
+    print(f"robot::{command}={result}")
+
+    sleep(5)
+    command = "RobotMode()"
+    result = robot_e6.send(command)
+    print(f"robot::{command}={result}")
     # result = robot_e6.sendRecvMsg("RobotMode()")
     # print(f"robot::RobotMode()={result}")
