@@ -5981,7 +5981,7 @@ db.bk_organization_250211.aggregate([
     {
         $out: "bk_organization_250211_1" 
     }
-    ])
+]);
 """
 
 # organization::update

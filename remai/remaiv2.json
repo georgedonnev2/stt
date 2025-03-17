@@ -1,0 +1,22 @@
+{
+    
+    "xtags":{
+        "__comment": "for option 'xtags'",
+        "year": "y2024"
+    },
+
+    "washd":{
+        "__comment": "for option 'washd'",
+        "year": "y2024",
+        "stu_fpath": "/Users/george1442/gdpvt/remai/student",
+        "usci_fpath": "/Users/george1442/gdpvt/add-org"
+    },
+
+    "toxls":{
+        "__comment": "for option 'toxls'",
+        "xyears": ["y2024"],
+        "pick": 1
+    }
+
+
+}

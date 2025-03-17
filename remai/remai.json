@@ -1,0 +1,15 @@
+{
+    
+    "tags":{
+        "__comment": "for option '--tags'",
+        "year": "y2024"
+    },
+
+    "wash":{
+        "__comment": "for option '--tags'",
+        "usci_fpath": "~/gdpvt/add-org"
+    }
+
+
+
+}
