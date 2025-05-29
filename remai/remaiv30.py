@@ -3,8 +3,10 @@
 
 from datetime import date, datetime, timedelta, timezone
 import json
+import os
 import pandas as pd
 from pathlib import Path
+
 import random
 import re
 import sys
@@ -21,6 +23,8 @@ logging.basicConfig(level=logging.INFO)
 FV_NOT_FOUND = "nf-404"
 FV_ROOT_NODE = "i-root"
 FV_NOT_APP = "not-applicable"
+
+HOME_DB = "remaiv3"
 
 
 ###
@@ -121,6 +125,72 @@ def show_t(tree, count=10, show="all", cr="yes"):
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
+class RemaiConfig:
+
+    ###
+    def __init__(self):
+
+        file_path = __file__
+        file_name_with_ext = os.path.basename(file_path)
+        file_name_without_ext, file_extension = os.path.splitext(file_name_with_ext)
+
+        self.__fn = file_name_without_ext + ".json"
+        self.__config = {}
+
+        return
+
+    ###
+    def load(self):
+        with open(self.fn, encoding="utf-8") as file:
+            self.__config = json.load(file)
+
+        # print(f"config=#{self.__config}#")
+        return
+
+    @property
+    def expx_fpath(self):
+        return self.__config["toxls"]["expx_fpath"]
+
+    @property
+    def fn(self):
+        return self.__fn
+
+    @fn.setter
+    def fn(self, v):
+        self.__fn = v
+        return
+
+    @property
+    def listx_fpath(self):
+        return self.__config["washd"]["listx_fpath"]
+
+    @property
+    def toxls_pick(self):
+        return self.__config["toxls"]["pick"]
+
+    @property
+    def toxls_xyears(self):
+        return self.__config["toxls"]["xyears"]
+
+    @property
+    def stu_fpath(self):
+        return self.__config["washd"]["stu_fpath"]
+
+    @property
+    def usci_fpath(self):
+        return self.__config["washd"]["usci_fpath"]
+
+    @property
+    def year(self):
+        return self.__config["year"]
+
+
+###
+remaicfg = RemaiConfig()
+
+
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 class RemAi:
 
     ###
@@ -201,7 +271,8 @@ class RemAi:
     def insert2db(self, key_field, tree4chk, tree4post=None):
 
         client = MongoClient()
-        db = client.get_database("remai")
+        db = client.get_database(HOME_DB)
+        # print(f"db={db}")
 
         ops4db = []
         # result : of db operation,
@@ -249,7 +320,7 @@ class RemAi:
             mapx = xmap
 
         client = MongoClient()
-        db = client.get_database("remai")
+        db = client.get_database(HOME_DB)
 
         query = queryx
         projection = {"_id": 0}
@@ -277,14 +348,23 @@ class RemAi:
         # list_xls: [{k1:v11,k2:v12,...},{k1:v21,k2:v22,...},...]
 
         c4fp = 0
+        fp = 0
         if len(self.flist) == 0:
-            return c4fp
+            print(f"len-of-flist={len(self.flist)}")
+            return c4fp, fp
 
         self.tree = {}
+
         for fp in self.flist:
             # print(f">>> fp = {fp}")
-            df = pd.read_excel(fp)
-            # print(df.isna())
+            df_temp = pd.read_excel(fp, nrows=0)
+            converters_dict = {col: str for col in df_temp.columns}
+
+            df = pd.read_excel(fp, converters=converters_dict)
+            # print("-" * 144)
+            # print(f"df={df}")
+            # print("-" * 144)
+
             df = df.fillna("")  # to be amended for different value for diff column.
             xls = df.to_dict(orient="records")
 
@@ -302,8 +382,9 @@ class RemAi:
             # print(f"size of row = {len(xls)}")
             # count = 1
             for row in xls:
-                # print(f">>> [{count}]row=#{row}#")
-                # count += 1
+                # if count <= 10:
+                #     print(f">>> [{count}]row=#{row}#")
+                #     count += 1
                 # for k, v in row.items():
                 #     if v == "nan":
                 #         print(f"k={k}, v is na.")
@@ -585,7 +666,7 @@ class RemAi:
     def update2db(self, key_field, tree4chk=None, tree4post=None):
 
         client = MongoClient()
-        db = client.get_database("remai")
+        db = client.get_database(HOME_DB)
 
         ops4db = []
         # result : of db operation,
@@ -744,9 +825,13 @@ class RemAi:
 # ------------------------------------------------------------------------------
 class ListChn500Year(RemAi):
     ###
-    def __init__(self, year):
+    def __init__(self, year, argx=None):
 
-        __coll = "list_chn500_" + year
+        if argx is not None:
+            __coll = argx.get("coll", "list_chn500_" + year)
+        else:
+            __coll = "list_chn500_" + year
+
         arg = {
             "coll": __coll,
             "year": year,
@@ -757,10 +842,44 @@ class ListChn500Year(RemAi):
                 "oname_fr": {"source": "oname_fr", "key": True},
                 "usn": {"source": "usn"},
             },
+            #
+            "map_fp2t": {
+                "oname_fr": {"source": "oname_fr", "key": True},
+                "rank": {"source": "rank", "format": "int"},
+                "oname": {"source": "oname"},
+                "revenue": {"source": "revenue", "format": "float"},
+                "profit": {"source": "profit", "format": "float"},
+            },
         }
 
         super().__init__(arg)
         return
+
+    ###
+    def update2db(self, tree4post=None):
+        tmp = ListChn500Year(self.year)
+        tmp.load_db()
+        return super().update2db("oname_fr", tmp.tree, tree4post)
+
+
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+class ListChn500Imp(ListChn500Year):
+
+    ###
+    def __init__(self, year, argx=None):
+        argx = {"coll": "list_chn500_" + year + "_" + datetime.now().strftime("%y%m")}
+        super().__init__(year, argx)
+
+    ###
+    def get_flist(self, folder):
+        file_key = "list_chn500_" + self.year + ".xlsx"
+        return super().get_flist(folder, file_key)
+
+    def insert2db(self, tree4post=None):
+        tmp = ListChn500Imp(self.year)
+        tmp.load_db()
+        return super().insert2db("oname_fr", tmp.tree, tree4post)
 
 
 # ------------------------------------------------------------------------------
@@ -785,6 +904,12 @@ class ListFic100SvcYear(RemAi):
         super().__init__(arg)
         return
 
+    ###
+    def update2db(self, tree4post=None):
+        tmp = ListFic100SvcYear(self.year)
+        tmp.load_db()
+        return super().update2db("oname_fr", tmp.tree, tree4post)
+
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
@@ -807,6 +932,12 @@ class ListFic500AllYear(RemAi):
 
         super().__init__(arg)
         return
+
+    ###
+    def update2db(self, tree4post=None):
+        tmp = ListFic500AllYear(self.year)
+        tmp.load_db()
+        return super().update2db("oname_fr", tmp.tree, tree4post)
 
 
 # ------------------------------------------------------------------------------
@@ -831,14 +962,24 @@ class ListFic500MfgYear(RemAi):
         super().__init__(arg)
         return
 
+    ###
+    def update2db(self, tree4post=None):
+        tmp = ListFic500MfgYear(self.year)
+        tmp.load_db()
+        return super().update2db("oname_fr", tmp.tree, tree4post)
+
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
 class ListGlb500Year(RemAi):
     ###
-    def __init__(self, year):
+    def __init__(self, year, argx=None):
 
-        __coll = "list_glb500_" + year
+        if argx is not None:
+            __coll = argx.get("coll", "list_glb500_" + year)
+        else:
+            __coll = "list_glb500_" + year
+
         arg = {
             "coll": __coll,
             "year": year,
@@ -850,6 +991,15 @@ class ListGlb500Year(RemAi):
                 "usn": {"source": "usn"},
                 "country": {"source": "country"},
             },
+            #
+            "map_fp2t": {
+                "oname_fr": {"source": "oname_fr", "key": True},
+                "rank": {"source": "rank", "format": "int"},
+                "oname": {"source": "oname"},
+                "country": {"source": "country"},
+                "revenue": {"source": "revenue", "format": "float"},
+                "profit": {"source": "profit", "format": "float"},
+            },
         }
 
         super().__init__(arg)
@@ -860,18 +1010,48 @@ class ListGlb500Year(RemAi):
     def setf_usn(self, treex):
 
         __not_found = {}
+        # count = 1
         for k, v in self.tree.items():
+            # print(f"#{count}::k={k},v={v}")
+            # count += 1
 
             if k in treex:
                 v["usn"] = treex[k]["usn"]
-            elif v["country"] != "中国":
-                continue
+
             else:
+                # print(f"k=#{k}#,country={v['country']}")
                 v["usn"] = FV_NOT_FOUND
+                if v["country"] == "中国":
+                    __not_found[k] = {}
                 # print(f"k={k} not in treex.")
-                __not_found[k] = {}
 
         return __not_found
+
+    ###
+    def update2db(self, tree4post=None):
+        tmp = ListGlb500Year(self.year)
+        tmp.load_db()
+        return super().update2db("oname_fr", tmp.tree, tree4post)
+
+
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+class ListGlb500Imp(ListGlb500Year):
+
+    ###
+    def __init__(self, year, argx=None):
+        argx = {"coll": "list_glb500_" + year + "_" + datetime.now().strftime("%y%m")}
+        super().__init__(year, argx)
+
+    ###
+    def get_flist(self, folder):
+        file_key = "list_glb500_" + self.year + ".xlsx"
+        return super().get_flist(folder, file_key)
+
+    def insert2db(self, tree4post=None):
+        tmp = ListGlb500Imp(self.year)
+        tmp.load_db()
+        return super().insert2db("oname_fr", tmp.tree, tree4post)
 
 
 # ------------------------------------------------------------------------------
@@ -895,6 +1075,12 @@ class ListIsc100Year(RemAi):
 
         super().__init__(arg)
         return
+
+    ###
+    def update2db(self, tree4post=None):
+        tmp = ListIsc100Year(self.year)
+        tmp.load_db()
+        return super().update2db("oname_fr", tmp.tree, tree4post)
 
 
 # ------------------------------------------------------------------------------
@@ -990,6 +1176,12 @@ class ListSoe(RemAi):
 
         return __not_found
 
+    ###
+    def update2db(self, tree4post=None):
+        tmp = ListSoe(self.year)
+        tmp.load_db()
+        return super().update2db("oname_fr", tmp.tree, tree4post)
+
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
@@ -1051,9 +1243,7 @@ class Organization(RemAi):
             "coll": "organization",
             "years": xyears,
             "year": xyears[0],
-            "to_fpath": "exp-organization-"
-            + datetime.now().strftime("%d%H%M")
-            + ".xlsx",
+            "to_fpath": "exp-organization-" + datetime.now().strftime("%m%d") + ".xlsx",
             "map_db2t": {
                 "usn": {"source": "usn", "key": True},  # f01
                 "oname": {"source": "oname"},  # f02
@@ -1319,6 +1509,13 @@ class Organization(RemAi):
         org4chk.load_db()
         return super().update2db("usn", org4chk.tree, tree4post)
 
+    # @property
+    def getf_former_name_fr(self, node):
+        return self.tree[node]["former_name_fr"]
+
+    def setf_former_name_fr(self, node, v):
+        self.tree[node]["former_name_fr"] = v
+
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
@@ -1332,6 +1529,7 @@ class Org4Usn(RemAi):
             "map_db2t": {
                 "oname_fr": {"source": "oname_fr", "key": True},
                 "usn": {"source": "usn"},
+                "former_name_fr": {"source": "former_name_fr"},
                 "pnode_name": {"source": "parent_node.oname_fr"},
             },
         }
@@ -1343,7 +1541,7 @@ class Org4Usn(RemAi):
     def get_max_usn(self):
 
         client = MongoClient()
-        db = client.get_database("remai")
+        db = client.get_database(HOME_DB)
 
         pipeline = [{"$project": {"_id": 0, "usn": 1}}, {"$sort": {"usn": -1}}]
         cursor = db.get_collection(self.coll).aggregate(pipeline)
@@ -1354,6 +1552,24 @@ class Org4Usn(RemAi):
             break  # get a doc, that is max usn.
 
         return max_usn
+
+    ###
+    def load_db(self, queryx={}, xmap=None, tree4load=None):
+        result = super().load_db(queryx, xmap, tree4load)
+        # print(f"{self.coll} :: size = {self.size}")
+
+        # tree_fn = {}
+        # # add 'former_name_fr' to tree
+        # for k, v in self.tree.items():
+        #     if v["former_name_fr"] == {}:
+        #         continue
+        #     print(f"k={k}, former={v['former_name_fr']}")
+        #     for kfn in v["former_name_fr"].keys():
+        #         tree_fn[kfn] = {"usn": v["usn"], "pnode_name": v["pnode_name"]}
+
+        # self.tree.update(tree_fn)
+        # print(f"{self.coll} :: size = {self.size}")
+        return result
 
 
 # ------------------------------------------------------------------------------
@@ -1564,6 +1780,7 @@ class OrgBizReg(RemAi):
 
         # set "" / {} if null
         for k, v in treex.items():
+            # print(f"k={k},v={v}")
             if v["pnode_name"] is None:
                 v["pnode_name"] = ""
         for k, v in self.tree.items():
@@ -1577,9 +1794,9 @@ class OrgBizReg(RemAi):
                     continue  # both empty or both have something
                 if treex[k]["pnode_name"] != "":  # tree has something but self is empty
                     result["set"] += 1
-                    print(
-                        f"k=#{k}#,self=#{v['parent_node'].get('oname_fr','')}#, tree={treex[k]['pnode_name']}"
-                    )
+                    # print(
+                    #     f"k=#{k}#,self=#{v['parent_node'].get('oname_fr','')}#, tree={treex[k]['pnode_name']}"
+                    # )
                     v["parent_node"]["oname_fr"] = treex[k]["pnode_name"]
 
         return result
@@ -1818,10 +2035,11 @@ class StudentYear(RemAi):
         arg = {
             "coll": "student_" + year,
             "year": year,
+            #
             "to_fpath": "exp-student-"
             + year
             + "-"
-            + datetime.now().strftime("%d%H%M")
+            + datetime.now().strftime("%m%d")
             + ".xlsx",
             #
             "map_db2t": {
@@ -1923,7 +2141,13 @@ class StudentYear(RemAi):
     ###
     def copyf_h_tagx(self, tree4copy):
 
-        __tag_copied = {"got-job": 0, "match": 0, "not-found": {}, "egc_tagx": {}}
+        __tag_copied = {
+            "got-job": 0,
+            "match": 0,
+            "match-fn": {},
+            "not-found": {},
+            "egc_tagx": {},
+        }
         for k, v in self.tree.items():
 
             # only focus 'got-job'
@@ -1934,10 +2158,17 @@ class StudentYear(RemAi):
 
             __match = False
             for korg, vorg in tree4copy.items():
+
                 if v["oname_fr"] == vorg["oname_fr"]:
                     __tag_copied["match"] += 1
                     __match = True
 
+                if v["oname_fr"] in vorg["former_name_fr"]:
+                    __tag_copied["match"] += 1
+                    __match = True
+                    __tag_copied["match-fn"][k] = v["oname_fr"]
+
+                if __match == True:
                     v["category"] = vorg["category"]  # f14
                     v["category_fr"] = vorg["category_fr"]  # f15
                     v["usci_org_fr"] = vorg["usci_org_fr"]  # f17
@@ -1960,6 +2191,9 @@ class StudentYear(RemAi):
                             if __tag_copied["egc_tagx"].get(tag, 0) == 0:  # not exist
                                 __tag_copied["egc_tagx"][tag] = 0
                             __tag_copied["egc_tagx"][tag] += 1
+
+                    # if match then break
+                    break
 
             if __match == False:
                 v["category"] = FV_NOT_FOUND  # f14
@@ -2001,6 +2235,12 @@ class StudentYear(RemAi):
 
         return
 
+    ###
+    def update2db(self, tree4post=None):
+        tmp = StudentYear(self.year)
+        tmp.load_db()
+        return super().update2db("sid", tmp.tree, tree4post)
+
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
@@ -2013,7 +2253,7 @@ class StudentWashd(RemAi):
         if coll != None:
             __coll = coll
         else:
-            __coll = "student_" + year + "_" + datetime.now().strftime("%m%d")
+            __coll = "student_" + year + "_" + datetime.now().strftime("%y%m")
 
         arg = {
             "coll": __coll,
@@ -2128,7 +2368,7 @@ class StudentWashd(RemAi):
 
     ###
     def get_flist(self, folder):
-        file_key = "就业方案导出"
+        file_key = "student_" + self.year + ".xlsx"
         super().get_flist(folder, file_key)
         return
 
@@ -2149,6 +2389,8 @@ class StudentWashd(RemAi):
 
     ### set some additional fields (to post to db)
     def setf_xfields(self):
+
+        result = {"degree_year": {}, "path_fr": {}}
 
         # set field 'oname_fr'
         for k, v in self.tree.items():  # k = sid
@@ -2176,6 +2418,9 @@ class StudentWashd(RemAi):
             match v["degree"]:
                 case "二学位毕业" | "本科生毕业":
                     v["degree_year"] = "bachelor"
+                case "本科生结业":
+                    v["degree_year"] = "bachelor"
+                    result["degree_year"][k] = v["degree"]
                 case "硕士生毕业":
                     v["degree_year"] = "master"
                 case "博士生毕业":
@@ -2183,7 +2428,7 @@ class StudentWashd(RemAi):
 
             if v["degree_year"] == "":
                 raise ValueError(
-                    f"学号={k}的学历层次取值有误，期望是'二学位毕业,'本科生毕业','硕士生毕业','博士生毕业'。"
+                    f"学号={k}的学历层次取值有误，期望是'二学位毕业,'本科生毕业','本科生结业', '硕士生毕业','博士生毕业'。"
                 )
             else:
                 v["degree_year"] += "-" + self.year  # -， not _
@@ -2204,14 +2449,16 @@ class StudentWashd(RemAi):
                     | "519"
                 ):
                     v["path_fr"] = "got-job"
-                case "85" | "801" | "802":
+                case "85" | "801" | "802" | "80":
                     v["path_fr"] = "further-study"
                 case _:
-                    raise ValueError(
-                        f"学号={v['sid']}的'毕业去向类别代码'取值有误，期望是'10,11,12,271,46,502,503,512,519,76,801,802,85'。"
-                    )
+                    result["path_fr"][k] = v["path_after_graduate_code"]
+                    v["path_fr"] = FV_NOT_FOUND
+                    # loggi(
+                    #     f"学号={k}的'毕业去向类别代码'({v['path_after_graduate_code']})取值有误，期望是'10,11,12,271,46,502,503,512,519,76,801,802,85'。"
+                    # )
 
-        return
+        return result
 
     ###
 
@@ -2576,15 +2823,13 @@ def exp_org_stu():
 
 
 # ------------------------------------------------------------------------------
-def xtags(remai_config):
+def xtags(remaicfg):
 
-    year = remai_config["xtags"]["year"]
-
-    organization = Organization(year)  # like 'y2024'
-    print(f"{organization.coll} :: {organization.year}")
-    student = StudentYear(year)
+    organization = Organization(remaicfg.year)  # like 'y2024'
+    # print(f"{organization.coll} :: {organization.year}")
+    student = StudentYear(remaicfg.year)
     logging.info("-" * 144)
-    logging.info(f"{year} :: tag '{organization.coll}' and '{student.coll}'.")
+    logging.info(f"{remaicfg.year} :: tag '{organization.coll}' and '{student.coll}'.")
     logging.info("-" * 144 + "\n")
     organization.load_db()
 
@@ -2599,15 +2844,15 @@ def xtags(remai_config):
 
     #
     list4by = [
-        ListGlb500Year(year),
-        ListChn500Year(year),
-        ListSoe(year),
-        ListPlc(year),
-        NationalHte(year),
-        ListIsc100Year(year),
-        ListFic500AllYear(year),
-        ListFic500MfgYear(year),
-        ListFic100SvcYear(year),
+        ListGlb500Year(remaicfg.year),
+        ListChn500Year(remaicfg.year),
+        ListSoe(remaicfg.year),
+        ListPlc(remaicfg.year),
+        NationalHte(remaicfg.year),
+        ListIsc100Year(remaicfg.year),
+        ListFic500AllYear(remaicfg.year),
+        ListFic500MfgYear(remaicfg.year),
+        ListFic100SvcYear(remaicfg.year),
     ]
 
     #
@@ -2703,12 +2948,16 @@ def xtags(remai_config):
             f"{result['got-job']} student(s) got job, {result['match']} matched, {result['got-job'] - result['match']} not found."
         )
         logging.warning(f"not-found = {result['not-found']}\n")
+    if len(result["match-fn"]) > 0:
+        logging.info(
+            f"{len(result['match-fn'])} student(s) matched former name : {result['match-fn']}"
+        )
     logging.info(f"tags copied (excl. 'nf-404') : {result['egc_tagx']}")
 
     # post to 'organization'
-    tmp = StudentYear(year)
+    tmp = StudentYear(remaicfg.year)
     tmp.load_db()
-    result = student.update2db("sid", tree4chk=tmp.tree)
+    result = student.update2db()
     logging.info("-" * 72)
     if result["ops4db"] == True:
         logging.info(
@@ -2722,14 +2971,10 @@ def xtags(remai_config):
 
 
 # ------------------------------------------------------------------------------
-def toxls(remai_config):
-
-    print(
-        f"xyears = {remai_config['toxls']['xyears']}, pick = {remai_config['toxls']['pick']}"
-    )
+def toxls(remaicfg):
 
     # export 'student' to file
-    for year in remai_config["toxls"]["xyears"]:
+    for year in remaicfg.toxls_xyears:
 
         stu2xls = StudentYear(year)
         logging.info("-" * 144)
@@ -2743,7 +2988,10 @@ def toxls(remai_config):
         )
 
     # export 'organization' to file
-    xyears = remai_config["toxls"]["xyears"]
+    xyears = remaicfg.toxls_xyears
+    print(f"xyears={xyears}")
+    xyears.sort()
+    print(f"xyears={xyears}")
     org2xls = Organization(*xyears)
     logging.info("-" * 144)
     logging.info(f"{org2xls.coll} :: exporting docs to excel ...'")
@@ -2751,7 +2999,7 @@ def toxls(remai_config):
 
     xtree = {}
     for year in xyears:
-        match remai_config["toxls"]["pick"]:
+        match remaicfg.toxls_pick:
             case -1:
                 query = {
                     "$or": [
@@ -2841,14 +3089,14 @@ def wash_org_stu(year):
 
 
 ###
-def washd(remai_config):
+def washd(remaicfg):
 
     logging.info("-" * 72)
     logging.info("add student files to db.")
     logging.info("-" * 72 + "\n")
 
-    student = StudentWashd(remai_config["washd"]["year"])
-    student.get_flist(remai_config["washd"]["stu_fpath"])
+    student = StudentWashd(remaicfg.year)
+    student.get_flist(remaicfg.stu_fpath)
     if len(student.flist) > 0:
         # print(f"flist=#{student.flist}#")
         student.flist.sort()
@@ -2879,9 +3127,45 @@ def washd(remai_config):
     logging.info(
         f"{student.coll} :: set more fields, 'oname_fr' / 'degree_year' / 'path_fr' ..."
     )
-    student.setf_xfields()
+    result = student.setf_xfields()
+    if len(result["degree_year"]) > 0:
+        logging.warning(
+            f"{len(result['degree_year'])} student(s) have bad value of 'degree' : {result['degree_year']}.\n"
+        )
+    if len(result["path_fr"]) > 0:
+        logging.warning(
+            f"{len(result['path_fr'])} student(s) have bad value of 'path_after_graduate' : {result['path_fr']}.\n"
+        )
     # student.show_tree()
 
+    result = student.update2db()
+    if result["ops4db"] == True:
+        logging.info(
+            f"{student.coll} :: update done, [{result['result'].matched_count}] matched, [{result['result'].modified_count}] modified.\n"
+        )
+    else:
+        logging.info(f"{student.coll} ::  update done, no doc changed in db.\n")
+
+    ###
+    # student :: wash empty field 'oname_fr'.
+    student = StudentYear(remaicfg.year)
+    student.load_db()
+    result = {}
+    logging.info("-" * 144)
+    logging.info(f"{student.coll} :: wash field 'oname_fr'.")
+    for k, v in student.tree.items():
+        match v["oname_fr"]:
+            case "":
+                # print(f"k={k}, v={v}")
+                if v["path_fr"] == "got-job":
+                    v["oname_fr"] = FV_NOT_FOUND
+                    result[k] = {}
+            case _:
+                pass
+    if len(result) > 0:
+        logging.info(
+            f"{len(result)} doc(s) 's 'oname_fr' are set as '{FV_NOT_FOUND}' : {show_t(result,show='k',cr='no')} \n"
+        )
     result = student.update2db()
     if result["ops4db"] == True:
         logging.info(
@@ -2905,7 +3189,7 @@ def washd(remai_config):
     #         for k1, v1 in v.items():
     #             print(f"k1={k1}, v1={v1}")
     org4bizreg = OrgBizReg()
-    org4bizreg.get_flist(remai_config["washd"]["usci_fpath"])
+    org4bizreg.get_flist(remaicfg.usci_fpath)
     logging.info(f" {len(org4bizreg.flist)} file(s)(工商注册信息) found.")
     result = org4bizreg.load_fp()
     logging.info(f" read {result} file(s)(工商注册信息) done.")
@@ -2921,7 +3205,7 @@ def washd(remai_config):
 
     #
     org4noucsi = OrgNoUSCI()
-    org4noucsi.get_flist(remai_config["washd"]["usci_fpath"])
+    org4noucsi.get_flist(remaicfg.usci_fpath)
     logging.info(f" {len(org4noucsi.flist)} file(s)(无社会信用代码) found.")
     c4fp, fp = org4noucsi.load_fp()
     logging.info(f" read {c4fp} doc(s) (无社会信用代码) done, from file '{fp.name}'.")
@@ -2949,7 +3233,7 @@ def washd(remai_config):
 
     # setf 'parent_node', based on file
     org4pchild = OrgPChild()
-    org4pchild.get_flist(remai_config["washd"]["usci_fpath"])
+    org4pchild.get_flist(remaicfg.usci_fpath)
     logging.info(f" {len(org4pchild.flist)} file(s)(层级关系) found.")
     # print(f"fp={org4pchild.flist}")
     c4fp, fp = org4pchild.load_fp()
@@ -3005,6 +3289,7 @@ def washd(remai_config):
     usn_nf = {}
     pnode_usn_nf = {}
     for k, v in org4bizreg.tree.items():
+        # print(f"k={k}, v={v}")
         if v["usn"] is None:
             usn_nf[k] = {}
         if len(v["usn"]) == 0:
@@ -3013,6 +3298,7 @@ def washd(remai_config):
         if v["parent_node"] == {}:
             continue
         if v["parent_node"].get("usn", None) is None:
+            v["parent_node"]["usn"] = ""
             pnode_usn_nf[k] = {}
         if len(v["parent_node"]["usn"]) == 0:
             pnode_usn_nf[k] = {}
@@ -3028,7 +3314,8 @@ def washd(remai_config):
 
     ###
 
-    organization = Organization(remai_config["washd"]["year"])
+    # organization :: set field 'parent_node' (to be removed later when 'h_psn' is deleted.)
+    organization = Organization(remaicfg.year)
     logging.info(f"{organization.coll} :: set 'parent_node' based on 'h_psn'.")
     organization.load_db()
     for k, v in organization.tree.items():
@@ -3053,6 +3340,24 @@ def washd(remai_config):
                 if v["h_psn"] != v["parent_node"]["usn"]:
                     v["h_psn"] = v["parent_node"]["usn"]
 
+    # organization :: split former_name if there are some.
+    logging.info(f"{organization.coll} :: wash field 'former_name_fr'.")
+    for k, v in organization.tree.items():
+        # print(f"f={organization.former_name_fr}")
+        match organization.getf_former_name_fr(k):
+            case None | "-":
+                organization.setf_former_name_fr(k, {})
+            case {}:
+                # print(f"fname={organization.getf_former_name_fr(k)}")
+                pass
+            case _:
+                # several former names are seperated by '\n', from aiqicha.com
+                fnames = organization.getf_former_name_fr(k).split("\n")
+                fname_node = {fn: {} for fn in fnames}
+                # print(f"fname_node = {fname_node}")
+                organization.setf_former_name_fr(k, fname_node)
+
+    # update organization
     result = organization.update2db()
     if result["ops4db"] == True:
         logging.info(
@@ -3060,6 +3365,47 @@ def washd(remai_config):
         )
     else:
         logging.info(f"{organization.coll} :: update done, no doc changed in db.")
+
+    ###
+    ###
+    ### add listx files to db, such as list_glb500_y2024.xlsx.
+    logging.info("-" * 72)
+    logging.info("add listx files to db.")
+    logging.info("-" * 72 + "\n")
+
+    #
+    list2wd = [
+        ListGlb500Imp(remaicfg.year),
+        ListChn500Imp(remaicfg.year),
+        # ListIsc100Year(remaicfg.year),
+        # ListFic500AllYear(remaicfg.year),
+        # ListFic500MfgYear(remaicfg.year),
+        # ListFic100SvcYear(remaicfg.year),
+    ]
+
+    for listx in list2wd:
+
+        logging.info("-" * 72)
+        # logging.info(f"{listx.coll} :: add listx to db ...")
+
+        #
+        listx.get_flist(remaicfg.listx_fpath)
+        # if len(listx.flist) > 0:
+        #     logging.info(f"{listx.coll} :: {len(listx.flist)} file(s) found.")
+
+        #
+        count, fp = listx.load_fp()
+        if count > 0:
+            logging.info(f"{listx.coll} :: {count} doc(s) read from file(s).")
+
+        # insert into 'list_xxxx_yyyy'
+        result = listx.insert2db()
+        if result["ops4db"] == True:
+            logging.info(
+                f"{listx.coll} :: insert done, [{result['result'].inserted_count}] inserted."
+            )
+        else:
+            logging.info(f"{listx.coll} :: insert done, no doc posted to db.")
 
     ###
     ###
@@ -3071,14 +3417,14 @@ def washd(remai_config):
 
     #
     list2wd = [
-        ListGlb500Year(remai_config["washd"]["year"]),
-        ListChn500Year(remai_config["washd"]["year"]),
-        ListSoe(remai_config["washd"]["year"]),
+        ListGlb500Year(remaicfg.year),
+        ListChn500Year(remaicfg.year),
+        ListSoe(remaicfg.year),
         # ListPlc(remai_config["washd"]["year"]),
-        ListIsc100Year(remai_config["washd"]["year"]),
-        ListFic500AllYear(remai_config["washd"]["year"]),
-        ListFic500MfgYear(remai_config["washd"]["year"]),
-        ListFic100SvcYear(remai_config["washd"]["year"]),
+        ListIsc100Year(remaicfg.year),
+        ListFic500AllYear(remaicfg.year),
+        ListFic500MfgYear(remaicfg.year),
+        ListFic100SvcYear(remaicfg.year),
     ]
     org4usn = Org4Usn()
     org4usn.load_db()
@@ -3096,7 +3442,7 @@ def washd(remai_config):
         result = listx.setf_usn(org4usn.tree)
         if len(result) > 0:
             logging.warning(
-                f"{listx.coll} :: [{len(result)}] doc(s) not foud 'usn' : {show_t(result, show='k', cr='no')}\n"
+                f"{listx.coll} :: [{len(result)}] doc(s)'s 'usn' are not found : {show_t(result, show='k', cr='no')}\n"
             )
         else:
             logging.info(f"{listx.coll} :: set field 'usn' done.")
@@ -3105,16 +3451,25 @@ def washd(remai_config):
         if ("chn500" in listx.coll) or ("isc100" in listx.coll):
             print(f"{show_t(result, count=100, show='k', cr='no')}\n")
 
+        # update to db
+        result = listx.update2db()
+        if result["ops4db"] == True:
+            logging.info(
+                f"{listx.coll} :: update done, [{result['result'].matched_count}] matched, [{result['result'].modified_count}] modified.\n"
+            )
+        else:
+            logging.info(f"{listx.coll} :: update done, no doc changed in db.\n")
+
     return
 
 
 # ------------------------------------------------------------------------------
-def washdcp(remai_config):
+def washdcp(remaicfg):
 
     org4bizreg = OrgBizReg()
     org4bizreg.load_db2db()
 
-    organization = Organization(remai_config["washd"]["year"])
+    organization = Organization(remaicfg.year)
     logging.info(f"{organization.coll} :: update from '{org4bizreg.coll}' ...")
     result = organization.insert2db(tree4post=org4bizreg.tree)
     if result["ops4db"] == True:
@@ -3153,37 +3508,32 @@ def main():
 
     # read config file
     # print(f"argv[0] = #{arguments[0]}#")
-    config_file = arguments[0].split(".")
-    config_file = config_file[0]
-    config_file = config_file + ".json"
+    # config_file = arguments[0].split(".")
+    # config_file = config_file[0]
+    # config_file = config_file + ".json"
+    # remaicfg = RemaiConfig()
+
     try:
-        with open(config_file, encoding="utf-8") as file:
-            remai_config = json.load(file)
+        remaicfg.load()
     except Exception as e:
-        logging.error(f"""read {config_file} error: {e}\nfix it, then try again.\n""")
+        logging.error(f"read {remaicfg.fn} error: {e}\nfix it, then try again.\n")
     # finally:
     #     logging.info("fix it, then try again.\n")
-
-    year = remai_config["xtags"]["year"]
-    # print(f"main :: year = #{year}#")
-    # for k, v in remai_config.items():
-    #     print(f"k={k}, v={v}")
-    # return
 
     #
     match arguments[1]:
         case "xtags":  # tag 'organization' & 'student_yxxxx'
             # print("it is '--tags'.")
-            xtags(remai_config)
+            xtags(remaicfg)
         case "washd":
             # print("it is '--wash'.")
-            washd(remai_config)
+            washd(remaicfg)
         case "washdcp":
             # print("it is '--wash'.")
-            washdcp(remai_config)
+            washdcp(remaicfg)
         case "toxls":
             # print("it is 'toxls'.")
-            toxls(remai_config)
+            toxls(remaicfg)
         case _:  # _, not '_' or '-'
             print(f"usage: {arguments[0]} [xtags][washd][toxls]", end="\n\n")
 
@@ -3298,3 +3648,10 @@ db.list_fic500_mfg_y2024.aggregate([
     }
 ]);
 """
+
+
+# mongoexport --db=remai --collection=list_fic100_svc_y2023 --out=remai-list_fic100_svc_y2023.json
+# mongoimport --db=remaiv3 --collection=list_fic100_svc_y2023 --file=remai-list_fic100_svc_y2023.json
+
+# db.list_chn500_y2023.updateMany({},{$rename:{"list_chn500_y2023":"oname_fr"}})
+# db.list_glb500_y2023.updateMany({},{$rename:{"enterprise":"oname"}})

@@ -1,0 +1,24 @@
+{
+    "year":"y2024",
+
+    "xtags":{
+        "__comment": "for option 'xtags'"
+    },
+
+    "washd":{
+        "__comment": "for option 'washd'",
+
+        "stu_fpath": "/Users/george1442/gdpvt/remai/student",
+        "usci_fpath": "/Users/george1442/gdpvt/remai/organization",
+        "listx_fpath": "/Users/george1442/gdpvt/remai/listx"
+    },
+
+    "toxls":{
+        "__comment": "for option 'toxls'",
+        "xyears": ["y2023","y2022","y2024"],
+        "pick": 1,
+        "expx_fpath": "/Users/george1442/stt/remai/exportx"
+    }
+
+
+}

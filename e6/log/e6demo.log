@@ -1,0 +1,726 @@
+05-26 10:14:53 - 836 - INFO - e6 :: initialized.
+05-26 10:28:50 - 1021 - ERROR - read e6demo.json error: [Errno 2] No such file or directory: 'e6demo.json'
+fix it, then try again.
+Traceback (most recent call last):
+  File "/Users/george1442/stt/e6/e6demo.py", line 1019, in main
+    rae6cfg.load()
+  File "/Users/george1442/stt/e6/e6demo.py", line 70, in load
+    with open(self.fn, encoding="utf-8") as file:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'e6demo.json'
+05-26 10:28:50 - 901 - INFO - e6 :: initialized.
+05-26 11:28:30 - 885 - INFO - e6 :: initialized.
+05-26 11:29:46 - 886 - INFO - e6 :: initialized.
+05-26 11:31:18 - 887 - INFO - e6 :: initialized.
+05-26 11:42:12 - 885 - INFO - e6 :: initialized.
+05-26 11:54:42 - 1041 - INFO - 4 6dof txt file(s) found in /Users/george1442/stt/e6/6dof_txt: 123.txta.txta1.txtbb.txt
+05-26 11:54:44 - 1041 - INFO - 4 6dof txt file(s) found in /Users/george1442/stt/e6/6dof_txt: 123.txta.txta1.txtbb.txt
+05-26 11:54:46 - 1041 - INFO - 4 6dof txt file(s) found in /Users/george1442/stt/e6/6dof_txt: 123.txta.txta1.txtbb.txt
+05-26 11:54:48 - 1041 - INFO - 4 6dof txt file(s) found in /Users/george1442/stt/e6/6dof_txt: 123.txta.txta1.txtbb.txt
+05-26 11:54:50 - 1041 - INFO - 4 6dof txt file(s) found in /Users/george1442/stt/e6/6dof_txt: 123.txta.txta1.txtbb.txt
+05-26 11:54:52 - 1041 - INFO - 4 6dof txt file(s) found in /Users/george1442/stt/e6/6dof_txt: 123.txta.txta1.txtbb.txt
+05-26 11:54:54 - 1041 - INFO - 4 6dof txt file(s) found in /Users/george1442/stt/e6/6dof_txt: 123.txta.txta1.txtbb.txt
+05-26 11:54:56 - 1041 - INFO - 4 6dof txt file(s) found in /Users/george1442/stt/e6/6dof_txt: 123.txta.txta1.txtbb.txt
+05-26 11:54:58 - 1041 - INFO - 4 6dof txt file(s) found in /Users/george1442/stt/e6/6dof_txt: 123.txta.txta1.txtbb.txt
+05-26 11:58:43 - 1043 - INFO - 4 6dof txt file(s) found in /Users/george1442/stt/e6/6dof_txt: 123.txt, a.txt, a1.txt, bb.txt, 
+05-26 11:58:45 - 1043 - INFO - 4 6dof txt file(s) found in /Users/george1442/stt/e6/6dof_txt: 123.txt, a.txt, a1.txt, bb.txt, 
+05-26 11:58:47 - 1043 - INFO - 4 6dof txt file(s) found in /Users/george1442/stt/e6/6dof_txt: 123.txt, a.txt, a1.txt, bb.txt, 
+05-26 11:58:49 - 1043 - INFO - 4 6dof txt file(s) found in /Users/george1442/stt/e6/6dof_txt: 123.txt, a.txt, a1.txt, bb.txt, 
+05-26 11:58:51 - 1043 - INFO - 4 6dof txt file(s) found in /Users/george1442/stt/e6/6dof_txt: 123.txt, a.txt, a1.txt, bb.txt, 
+05-26 11:58:53 - 1043 - INFO - 4 6dof txt file(s) found in /Users/george1442/stt/e6/6dof_txt: 123.txt, a.txt, a1.txt, bb.txt, 
+05-26 11:58:55 - 1043 - INFO - 4 6dof txt file(s) found in /Users/george1442/stt/e6/6dof_txt: 123.txt, a.txt, a1.txt, bb.txt, 
+05-26 11:58:57 - 1043 - INFO - 4 6dof txt file(s) found in /Users/george1442/stt/e6/6dof_txt: 123.txt, a.txt, a1.txt, bb.txt, 
+05-26 11:59:11 - 1043 - INFO - 4 6dof txt file(s) found in /Users/george1442/stt/e6/6dof_txt: 123.txt, a.txt, a1.txt, bb.txt
+05-26 11:59:13 - 1043 - INFO - 4 6dof txt file(s) found in /Users/george1442/stt/e6/6dof_txt: 123.txt, a.txt, a1.txt, bb.txt
+05-26 11:59:15 - 1043 - INFO - 4 6dof txt file(s) found in /Users/george1442/stt/e6/6dof_txt: 123.txt, a.txt, a1.txt, bb.txt
+05-26 11:59:17 - 1043 - INFO - 4 6dof txt file(s) found in /Users/george1442/stt/e6/6dof_txt: 123.txt, a.txt, a1.txt, bb.txt
+05-26 11:59:19 - 1043 - INFO - 4 6dof txt file(s) found in /Users/george1442/stt/e6/6dof_txt: 123.txt, a.txt, a1.txt, bb.txt
+05-26 11:59:21 - 1043 - INFO - 4 6dof txt file(s) found in /Users/george1442/stt/e6/6dof_txt: 123.txt, a.txt, a1.txt, bb.txt
+05-26 11:59:23 - 1043 - INFO - 4 6dof txt file(s) found in /Users/george1442/stt/e6/6dof_txt: 123.txt, a.txt, a1.txt, bb.txt
+05-26 11:59:25 - 1043 - INFO - 4 6dof txt file(s) found in /Users/george1442/stt/e6/6dof_txt: 123.txt, a.txt, a1.txt, bb.txt
+05-26 11:59:27 - 1043 - INFO - 4 6dof txt file(s) found in /Users/george1442/stt/e6/6dof_txt: 123.txt, a.txt, a1.txt, bb.txt
+05-26 11:59:29 - 1043 - INFO - 4 6dof txt file(s) found in /Users/george1442/stt/e6/6dof_txt: 123.txt, a.txt, a1.txt, bb.txt
+05-26 11:59:31 - 1043 - INFO - 4 6dof txt file(s) found in /Users/george1442/stt/e6/6dof_txt: 123.txt, a.txt, a1.txt, bb.txt
+05-26 11:59:53 - 1043 - INFO - 1 6dof txt file(s) found in /Users/george1442/stt/e6/6dof_txt: aa.txt
+05-26 11:59:55 - 1043 - INFO - 1 6dof txt file(s) found in /Users/george1442/stt/e6/6dof_txt: aa.txt
+05-26 11:59:57 - 1043 - INFO - 1 6dof txt file(s) found in /Users/george1442/stt/e6/6dof_txt: aa.txt
+05-26 11:59:59 - 1043 - INFO - 1 6dof txt file(s) found in /Users/george1442/stt/e6/6dof_txt: aa.txt
+05-26 12:00:01 - 1043 - INFO - 1 6dof txt file(s) found in /Users/george1442/stt/e6/6dof_txt: aa.txt
+05-26 12:00:03 - 1043 - INFO - 1 6dof txt file(s) found in /Users/george1442/stt/e6/6dof_txt: aa.txt
+05-26 12:00:05 - 1043 - INFO - 1 6dof txt file(s) found in /Users/george1442/stt/e6/6dof_txt: aa.txt
+05-26 12:00:07 - 1043 - INFO - 1 6dof txt file(s) found in /Users/george1442/stt/e6/6dof_txt: aa.txt
+05-26 12:00:09 - 1043 - INFO - 1 6dof txt file(s) found in /Users/george1442/stt/e6/6dof_txt: aa.txt
+05-26 12:00:11 - 1043 - INFO - 1 6dof txt file(s) found in /Users/george1442/stt/e6/6dof_txt: aa.txt
+05-26 12:00:13 - 1043 - INFO - 1 6dof txt file(s) found in /Users/george1442/stt/e6/6dof_txt: aa.txt
+05-26 12:00:15 - 1043 - INFO - 1 6dof txt file(s) found in /Users/george1442/stt/e6/6dof_txt: aa.txt
+05-26 12:00:17 - 1043 - INFO - 1 6dof txt file(s) found in /Users/george1442/stt/e6/6dof_txt: aa.txt
+05-26 12:00:19 - 1043 - INFO - 1 6dof txt file(s) found in /Users/george1442/stt/e6/6dof_txt: aa.txt
+05-26 12:00:21 - 1043 - INFO - 1 6dof txt file(s) found in /Users/george1442/stt/e6/6dof_txt: aa.txt
+05-26 12:00:23 - 1043 - INFO - 1 6dof txt file(s) found in /Users/george1442/stt/e6/6dof_txt: aa.txt
+05-26 12:00:25 - 1043 - INFO - 1 6dof txt file(s) found in /Users/george1442/stt/e6/6dof_txt: aa.txt
+05-26 12:31:17 - 1043 - INFO - 1 file(s) found : aa.txt.
+05-26 12:31:19 - 1043 - INFO - 1 file(s) found : aa.txt.
+05-26 12:31:21 - 1043 - INFO - 1 file(s) found : aa.txt.
+05-26 12:31:23 - 1043 - INFO - 1 file(s) found : aa.txt.
+05-26 12:31:27 - 1049 - INFO - no file(s) found.
+05-26 12:31:33 - 1049 - INFO - no file(s) found.
+05-26 12:31:43 - 1049 - INFO - no file(s) found.
+05-26 12:32:01 - 1049 - INFO - no file(s) found.
+05-26 12:32:35 - 1049 - INFO - no file(s) found.
+05-26 12:33:41 - 1049 - INFO - no file(s) found.
+05-26 12:34:48 - 1049 - INFO - no file(s) found.
+05-26 12:35:54 - 1049 - INFO - no file(s) found.
+05-26 12:36:11 - 1049 - INFO - no file(s) found.
+05-26 12:36:13 - 1049 - INFO - no file(s) found.
+05-26 12:36:19 - 1049 - INFO - no file(s) found.
+05-26 12:36:33 - 1049 - INFO - no file(s) found.
+05-26 12:37:03 - 1049 - INFO - no file(s) found.
+05-26 12:38:05 - 1049 - INFO - no file(s) found.
+05-26 12:39:00 - 1049 - INFO - no file(s) found.
+05-26 12:39:06 - 1049 - INFO - no file(s) found.
+05-26 12:39:16 - 1049 - INFO - no file(s) found.
+05-26 12:39:34 - 1049 - INFO - no file(s) found.
+05-26 12:40:09 - 1049 - INFO - no file(s) found.
+05-26 12:41:15 - 1049 - INFO - no file(s) found.
+05-26 12:42:17 - 1049 - INFO - no file(s) found.
+05-26 12:42:59 - 1043 - INFO - 1 file(s) found : aa.txt.
+05-26 12:43:01 - 1043 - INFO - 1 file(s) found : aa.txt.
+05-26 12:43:03 - 1043 - INFO - 1 file(s) found : aa.txt.
+05-26 12:43:05 - 1043 - INFO - 1 file(s) found : aa.txt.
+05-26 12:43:27 - 1049 - INFO - no file(s) found.
+05-26 12:44:29 - 1049 - INFO - no file(s) found.
+05-26 12:45:31 - 1049 - INFO - no file(s) found.
+05-26 12:46:33 - 1049 - INFO - no file(s) found.
+05-26 12:47:35 - 1049 - INFO - no file(s) found.
+05-26 12:48:37 - 1049 - INFO - no file(s) found.
+05-26 12:49:40 - 1049 - INFO - no file(s) found.
+05-26 12:50:42 - 1049 - INFO - no file(s) found.
+05-26 12:51:44 - 1049 - INFO - no file(s) found.
+05-26 12:52:46 - 1049 - INFO - no file(s) found.
+05-26 12:53:48 - 1049 - INFO - no file(s) found.
+05-26 12:54:50 - 1049 - INFO - no file(s) found.
+05-26 12:55:52 - 1049 - INFO - no file(s) found.
+05-26 12:56:54 - 1049 - INFO - no file(s) found.
+05-26 12:57:57 - 1049 - INFO - no file(s) found.
+05-26 12:58:59 - 1049 - INFO - no file(s) found.
+05-26 13:00:01 - 1049 - INFO - no file(s) found.
+05-26 13:00:29 - 1043 - INFO - 1 file(s) found : aa.txt.
+05-26 13:00:31 - 1043 - INFO - 1 file(s) found : aa.txt.
+05-26 13:00:33 - 1043 - INFO - 1 file(s) found : aa.txt.
+05-26 13:00:35 - 1043 - INFO - 1 file(s) found : aa.txt.
+05-26 13:00:37 - 1043 - INFO - 1 file(s) found : aa.txt.
+05-26 13:00:39 - 1043 - INFO - 1 file(s) found : aa.txt.
+05-26 13:00:41 - 1043 - INFO - 1 file(s) found : aa.txt.
+05-26 13:00:43 - 1043 - INFO - 1 file(s) found : aa.txt.
+05-26 13:00:45 - 1043 - INFO - 1 file(s) found : aa.txt.
+05-26 13:00:47 - 1043 - INFO - 1 file(s) found : aa.txt.
+05-26 13:00:49 - 1043 - INFO - 1 file(s) found : aa.txt.
+05-26 13:00:51 - 1043 - INFO - 1 file(s) found : aa.txt.
+05-26 13:00:53 - 1043 - INFO - 1 file(s) found : aa.txt.
+05-26 13:00:55 - 1043 - INFO - 1 file(s) found : aa.txt.
+05-26 13:00:57 - 1043 - INFO - 1 file(s) found : aa.txt.
+05-26 13:01:33 - 1043 - INFO - 1 file(s) found : aa.txt.
+05-26 13:01:35 - 1043 - INFO - 1 file(s) found : aa.txt.
+05-26 13:01:37 - 1043 - INFO - 1 file(s) found : aa.txt.
+05-26 13:01:39 - 1043 - INFO - 1 file(s) found : aa.txt.
+05-26 13:01:41 - 1043 - INFO - 1 file(s) found : aa.txt.
+05-26 13:03:30 - 1043 - INFO - 2 file(s) found : aa.txt, bb.txt.
+05-26 13:03:32 - 1043 - INFO - 2 file(s) found : aa.txt, bb.txt.
+05-26 13:03:34 - 1043 - INFO - 2 file(s) found : aa.txt, bb.txt.
+05-26 13:03:36 - 1043 - INFO - 2 file(s) found : aa.txt, bb.txt.
+05-26 13:03:38 - 1043 - INFO - 2 file(s) found : aa.txt, bb.txt.
+05-26 13:03:40 - 1043 - INFO - 2 file(s) found : aa.txt, bb.txt.
+05-26 13:04:24 - 1043 - INFO - 2 file(s) found : aa.txt, bb.txt.
+05-26 13:04:26 - 1043 - INFO - 2 file(s) found : aa.txt, bb.txt.
+05-26 13:04:28 - 1043 - INFO - 2 file(s) found : aa.txt, bb.txt.
+05-26 13:04:30 - 1043 - INFO - 2 file(s) found : aa.txt, bb.txt.
+05-26 13:24:12 - 1070 - INFO - 2 file(s) found : aa.txt, bb.txt.
+05-26 13:27:14 - 1073 - INFO - 2 file(s) found : aa.txt, bb.txt.
+05-26 13:27:18 - 1091 - INFO - no file(s) found.
+05-26 13:27:24 - 1091 - INFO - no file(s) found.
+05-26 13:27:34 - 1091 - INFO - no file(s) found.
+05-26 13:27:52 - 1091 - INFO - no file(s) found.
+05-26 13:28:26 - 1091 - INFO - no file(s) found.
+05-26 13:29:32 - 1091 - INFO - no file(s) found.
+05-26 13:30:18 - 1093 - INFO - no file(s) found.
+05-26 13:30:24 - 1093 - INFO - no file(s) found.
+05-26 13:30:33 - 1073 - INFO - 2 file(s) found : aa.txt, bb.txt.
+05-26 13:30:37 - 1093 - INFO - no file(s) found.
+05-26 13:30:55 - 1093 - INFO - no file(s) found.
+05-26 13:31:29 - 1093 - INFO - no file(s) found.
+05-26 13:32:35 - 1093 - INFO - no file(s) found.
+05-26 13:33:37 - 1093 - INFO - no file(s) found.
+05-26 13:34:35 - 1073 - INFO - 1 file(s) found : bb.txt.
+05-26 13:34:41 - 1093 - INFO - no file(s) found.
+05-26 13:34:49 - 1073 - INFO - 1 file(s) found : aa.txt.
+05-26 13:35:28 - 1095 - INFO - no file(s) found.
+05-26 13:35:34 - 1095 - INFO - no file(s) found.
+05-26 13:35:42 - 1074 - INFO - 1 file(s) found : aa.txt.
+05-26 13:35:46 - 1095 - INFO - no file(s) found.
+05-26 13:36:04 - 1095 - INFO - no file(s) found.
+05-26 13:36:38 - 1095 - INFO - no file(s) found.
+05-26 13:36:59 - 1096 - INFO - no file(s) found.
+05-26 13:37:05 - 1096 - INFO - no file(s) found.
+05-26 13:37:09 - 1074 - INFO - 1 file(s) found : aa.txt.
+05-26 13:37:17 - 1096 - INFO - no file(s) found.
+05-26 13:37:35 - 1096 - INFO - no file(s) found.
+05-26 13:37:43 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 13:38:11 - 1096 - INFO - no file(s) found.
+05-26 13:38:41 - 1096 - INFO - no file(s) found.
+05-26 13:38:47 - 1096 - INFO - no file(s) found.
+05-26 13:38:55 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 13:38:59 - 1096 - INFO - no file(s) found.
+05-26 13:39:17 - 1096 - INFO - no file(s) found.
+05-26 13:39:35 - 1096 - INFO - no file(s) found.
+05-26 13:39:41 - 1096 - INFO - no file(s) found.
+05-26 13:39:45 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 13:39:45 - 1089 - INFO - 已移动 bb.txt 到 /Users/george1442/stt/e6/6dof_txt/moved
+05-26 13:39:53 - 1096 - INFO - no file(s) found.
+05-26 13:40:11 - 1096 - INFO - no file(s) found.
+05-26 13:40:45 - 1096 - INFO - no file(s) found.
+05-26 13:41:51 - 1096 - INFO - no file(s) found.
+05-26 13:42:54 - 1096 - INFO - no file(s) found.
+05-26 13:43:56 - 1096 - INFO - no file(s) found.
+05-26 13:44:58 - 1096 - INFO - no file(s) found.
+05-26 13:45:33 - 1074 - INFO - 2 file(s) found : aa.txt, bb.txt.
+05-26 13:45:33 - 1083 - ERROR - 处理文件 aa.txt 时出错: 文件 aa.txt 数据格式错误：应为 6 个数字，实际为 1 个
+05-26 13:45:33 - 1086 - INFO - 已移动 aa.txt 到 /Users/george1442/stt/e6/6dof_txt/moved
+05-26 13:46:50 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 13:46:52 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 13:46:54 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 13:46:56 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 13:46:58 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 13:47:00 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 13:47:02 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 13:48:00 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 13:48:02 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 13:48:04 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 13:48:06 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 13:48:08 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 13:48:10 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 13:48:12 - 1074 - INFO - 2 file(s) found : aa.txt, bb.txt.
+05-26 13:48:12 - 1083 - ERROR - 处理文件 aa.txt 时出错: 文件 aa.txt 数据格式错误：应为 6 个数字，实际为 1 个
+05-26 13:48:12 - 1086 - INFO - 已移动 aa.txt 到 /Users/george1442/stt/e6/6dof_txt/moved
+05-26 13:48:14 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 13:48:16 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 13:48:18 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 13:48:20 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 13:48:22 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 13:48:24 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 13:48:26 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 13:48:28 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 13:48:30 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 13:48:32 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 13:48:34 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 13:48:36 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 13:48:38 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 13:48:40 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 13:48:42 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 13:48:44 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 13:48:46 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 13:48:48 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 13:48:50 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 13:48:52 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 13:48:54 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 13:48:56 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 13:48:58 - 1074 - INFO - 2 file(s) found : bb.txt, cc.txt.
+05-26 13:48:58 - 1083 - ERROR - 处理文件 cc.txt 时出错: 文件 cc.txt 包含非浮点数: 'a'
+05-26 13:48:58 - 1086 - INFO - 已移动 cc.txt 到 /Users/george1442/stt/e6/6dof_txt/moved
+05-26 13:49:00 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 13:49:02 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 13:49:04 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 13:49:06 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 13:49:08 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 13:49:10 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 13:49:12 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 13:49:14 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 13:49:16 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 13:49:18 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 13:49:20 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 13:49:22 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 13:49:24 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 13:49:26 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 14:00:13 - 1074 - INFO - 2 file(s) found : bb.txt, cc.txt.
+05-26 14:00:13 - 1083 - ERROR - 处理文件 cc.txt 时出错: 文件 cc.txt 包含非浮点数: 'a'
+05-26 14:00:13 - 1086 - INFO - 已移动 cc.txt 到 moved 子目录 cc.txt_20250526140013_file_error
+05-26 14:00:15 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 14:00:17 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 14:00:19 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 14:00:21 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 14:00:23 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 14:00:25 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 14:00:27 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 14:00:29 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 14:00:31 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 14:00:33 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 14:00:35 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 14:00:37 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 14:00:39 - 1074 - INFO - 1 file(s) found : bb.txt.
+05-26 17:32:35 - 887 - INFO - e6 :: initialized.
+05-26 17:32:35 - 899 - INFO - e6 :: connected.
+
+05-26 17:32:35 - 908 - INFO - command=RobotMode()
+05-26 17:32:35 - 208 - INFO - recvData=0,{4},RobotMode();
+05-26 17:32:35 - 912 - WARNING - e6 :: 未使能(无抱闸松开).
+
+05-26 17:32:39 - 208 - INFO - recvData=0,{},EnableRobot();
+05-26 17:32:39 - 208 - INFO - recvData=0,{5},RobotMode();
+05-26 17:32:39 - 919 - INFO - e6 :: 使能且空闲.
+
+05-26 17:32:39 - 1092 - INFO - 1 file(s) found : bb.txt.
+05-26 17:32:41 - 1092 - INFO - 1 file(s) found : bb.txt.
+05-26 17:32:43 - 1092 - INFO - 1 file(s) found : bb.txt.
+05-26 17:32:45 - 1092 - INFO - 1 file(s) found : bb.txt.
+05-26 17:32:47 - 1092 - INFO - 1 file(s) found : bb.txt.
+05-26 17:32:49 - 1092 - INFO - 1 file(s) found : bb.txt.
+05-26 17:32:51 - 1092 - INFO - 1 file(s) found : bb.txt.
+05-26 17:32:53 - 1092 - INFO - 1 file(s) found : bb.txt.
+05-26 17:32:55 - 1092 - INFO - 1 file(s) found : bb.txt.
+05-26 17:32:57 - 1092 - INFO - 1 file(s) found : bb.txt.
+05-26 17:32:59 - 1092 - INFO - 1 file(s) found : bb.txt.
+05-26 17:33:01 - 1092 - INFO - 1 file(s) found : bb.txt.
+05-26 17:33:03 - 1092 - INFO - 1 file(s) found : bb.txt.
+05-26 17:36:47 - 899 - INFO - e6 :: initialized.
+05-26 17:36:47 - 911 - INFO - e6 :: connected.
+
+05-26 17:36:47 - 920 - INFO - command=RobotMode()
+05-26 17:36:47 - 208 - INFO - recvData=0,{5},RobotMode();
+05-26 17:36:47 - 934 - INFO - e6 :: 使能且空闲.
+
+05-26 17:36:47 - 208 - INFO - recvData=0,{-40.6376,-175.1399,589.6382,111.4361,-72.2814,-9.9513},GetPose();
+05-26 17:36:47 - 1105 - INFO - 1 file(s) found : bb.txt.
+05-26 17:36:49 - 1105 - INFO - 1 file(s) found : bb.txt.
+05-26 17:36:51 - 1105 - INFO - 1 file(s) found : bb.txt.
+05-26 17:44:05 - 900 - INFO - e6 :: initialized.
+05-26 17:44:05 - 912 - INFO - e6 :: connected.
+
+05-26 17:44:05 - 921 - INFO - command=RobotMode()
+05-26 17:44:05 - 208 - INFO - recvData=0,{5},RobotMode();
+05-26 17:44:05 - 935 - INFO - e6 :: 使能且空闲.
+
+05-26 17:44:05 - 208 - INFO - recvData=0,{-40.6376,-175.1399,589.6382,111.4361,-72.2814,-9.9513},GetPose();
+05-26 17:44:05 - 1093 - INFO - original_6dof = {'x': -40.6376, 'y': -175.1399, 'z': 589.6382, 'rx': 111.4361, 'ry': -72.2814, 'rz': -9.9513}
+05-26 17:44:05 - 1110 - INFO - 1 file(s) found : bb.txt.
+05-26 17:44:07 - 1110 - INFO - 1 file(s) found : bb.txt.
+05-26 17:44:09 - 1110 - INFO - 1 file(s) found : bb.txt.
+05-26 17:44:11 - 1110 - INFO - 1 file(s) found : bb.txt.
+05-26 17:44:13 - 1110 - INFO - 1 file(s) found : bb.txt.
+05-26 17:44:15 - 1110 - INFO - 1 file(s) found : bb.txt.
+05-26 17:44:17 - 1110 - INFO - 1 file(s) found : bb.txt.
+05-26 17:44:19 - 1110 - INFO - 1 file(s) found : bb.txt.
+05-26 17:44:21 - 1110 - INFO - 1 file(s) found : bb.txt.
+05-26 17:44:23 - 1110 - INFO - 1 file(s) found : bb.txt.
+05-26 17:44:25 - 1110 - INFO - 1 file(s) found : bb.txt.
+05-26 17:44:27 - 1110 - INFO - 1 file(s) found : bb.txt.
+05-26 17:44:29 - 1110 - INFO - 1 file(s) found : bb.txt.
+05-26 17:44:31 - 1110 - INFO - 1 file(s) found : bb.txt.
+05-26 17:44:33 - 1110 - INFO - 1 file(s) found : bb.txt.
+05-26 17:44:35 - 1110 - INFO - 1 file(s) found : bb.txt.
+05-26 17:44:38 - 1110 - INFO - 1 file(s) found : bb.txt.
+05-26 17:44:40 - 1110 - INFO - 1 file(s) found : bb.txt.
+05-26 17:44:42 - 1110 - INFO - 1 file(s) found : bb.txt.
+05-26 17:44:44 - 1110 - INFO - 1 file(s) found : bb.txt.
+05-26 17:44:46 - 1110 - INFO - 1 file(s) found : bb.txt.
+05-26 17:44:48 - 1110 - INFO - 1 file(s) found : bb.txt.
+05-26 17:44:50 - 1110 - INFO - 1 file(s) found : bb.txt.
+05-26 17:44:52 - 1110 - INFO - 1 file(s) found : bb.txt.
+05-26 17:44:54 - 1110 - INFO - 1 file(s) found : bb.txt.
+05-26 17:44:56 - 1110 - INFO - 1 file(s) found : bb.txt.
+05-26 17:44:58 - 1110 - INFO - 1 file(s) found : bb.txt.
+05-26 17:45:00 - 1110 - INFO - 1 file(s) found : bb.txt.
+05-26 17:45:02 - 1110 - INFO - 1 file(s) found : bb.txt.
+05-26 17:45:04 - 1110 - INFO - 1 file(s) found : bb.txt.
+05-26 17:45:06 - 1110 - INFO - 1 file(s) found : bb.txt.
+05-26 17:45:08 - 1110 - INFO - 1 file(s) found : bb.txt.
+05-26 17:45:10 - 1110 - INFO - 1 file(s) found : bb.txt.
+05-26 17:45:12 - 1110 - INFO - 1 file(s) found : bb.txt.
+05-26 17:45:14 - 1110 - INFO - 1 file(s) found : bb.txt.
+05-26 17:45:16 - 1110 - INFO - 1 file(s) found : bb.txt.
+05-26 17:45:18 - 1110 - INFO - 1 file(s) found : bb.txt.
+05-26 17:45:20 - 1110 - INFO - 1 file(s) found : bb.txt.
+05-26 17:45:22 - 1110 - INFO - 1 file(s) found : bb.txt.
+05-26 17:45:24 - 1110 - INFO - 1 file(s) found : bb.txt.
+05-26 17:45:26 - 1110 - INFO - 1 file(s) found : bb.txt.
+05-26 17:45:28 - 1110 - INFO - 1 file(s) found : bb.txt.
+05-26 17:45:30 - 1110 - INFO - 1 file(s) found : bb.txt.
+05-26 17:45:32 - 1110 - INFO - 1 file(s) found : bb.txt.
+05-26 17:45:34 - 1110 - INFO - 1 file(s) found : bb.txt.
+05-26 17:45:36 - 1110 - INFO - 1 file(s) found : bb.txt.
+05-26 17:45:38 - 1110 - INFO - 1 file(s) found : bb.txt.
+05-26 17:45:40 - 1110 - INFO - 1 file(s) found : bb.txt.
+05-26 17:45:42 - 1110 - INFO - 1 file(s) found : bb.txt.
+05-26 18:08:55 - 907 - INFO - e6 :: initialized.
+05-26 18:08:55 - 919 - INFO - e6 :: connected.
+
+05-26 18:08:55 - 928 - INFO - command=RobotMode()
+05-26 18:08:55 - 208 - INFO - recvData=0,{5},RobotMode();
+05-26 18:08:55 - 942 - INFO - e6 :: 使能且空闲.
+
+05-26 18:08:55 - 208 - INFO - recvData=0,{-40.6376,-175.1399,589.6382,111.4361,-72.2814,-9.9513},GetPose();
+05-26 18:08:55 - 1100 - INFO - original_6dof = {'x': -40.6376, 'y': -175.1399, 'z': 589.6382, 'rx': 111.4361, 'ry': -72.2814, 'rz': -9.9513}
+05-26 18:08:55 - 1118 - INFO - 1 file(s) found : bb.txt.
+05-26 18:10:35 - 908 - INFO - e6 :: initialized.
+05-26 18:10:35 - 920 - INFO - e6 :: connected.
+
+05-26 18:10:35 - 929 - INFO - command=RobotMode()
+05-26 18:10:35 - 208 - INFO - recvData=0,{5},RobotMode();
+05-26 18:10:35 - 943 - INFO - e6 :: 使能且空闲.
+
+05-26 18:10:35 - 208 - INFO - recvData=0,{-40.6376,-175.1399,589.6382,111.4361,-72.2814,-9.9513},GetPose();
+05-26 18:10:35 - 1101 - INFO - original_6dof = {'x': -40.6376, 'y': -175.1399, 'z': 589.6382, 'rx': 111.4361, 'ry': -72.2814, 'rz': -9.9513}
+05-26 18:10:35 - 1119 - INFO - 1 file(s) found : bb.txt.
+05-26 18:10:35 - 208 - INFO - recvData=-30001,{},MovL(pose={*list[dict_values([100.0, 200.0, 100.0, 30.0, 10.0, 40.0])]});
+05-26 18:10:35 - 1148 - WARNING - e6 :: 未知错误[-30001]。.
+
+05-26 18:10:35 - 1152 - INFO - 已移动 bb.txt 到 moved 子目录 bb.txt_20250526181035_robot_error
+05-26 18:10:39 - 1159 - INFO - no file(s) found.
+05-26 18:10:45 - 1159 - INFO - no file(s) found.
+05-26 18:10:55 - 1159 - INFO - no file(s) found.
+05-26 18:11:05 - 908 - INFO - e6 :: initialized.
+05-26 18:11:05 - 920 - INFO - e6 :: connected.
+
+05-26 18:11:05 - 929 - INFO - command=RobotMode()
+05-26 18:11:05 - 208 - INFO - recvData=0,{5},RobotMode();
+05-26 18:11:05 - 943 - INFO - e6 :: 使能且空闲.
+
+05-26 18:11:05 - 208 - INFO - recvData=0,{-40.6376,-175.1399,589.6382,111.4361,-72.2814,-9.9513},GetPose();
+05-26 18:11:05 - 1101 - INFO - original_6dof = {'x': -40.6376, 'y': -175.1399, 'z': 589.6382, 'rx': 111.4361, 'ry': -72.2814, 'rz': -9.9513}
+05-26 18:11:07 - 1159 - INFO - no file(s) found.
+05-26 18:11:13 - 1159 - INFO - no file(s) found.
+05-26 18:13:11 - 909 - INFO - e6 :: initialized.
+05-26 18:13:11 - 921 - INFO - e6 :: connected.
+
+05-26 18:13:11 - 930 - INFO - command=RobotMode()
+05-26 18:13:11 - 208 - INFO - recvData=0,{5},RobotMode();
+05-26 18:13:11 - 944 - INFO - e6 :: 使能且空闲.
+
+05-26 18:13:11 - 208 - INFO - recvData=0,{-40.6376,-175.1399,589.6382,111.4361,-72.2814,-9.9513},GetPose();
+05-26 18:13:11 - 1102 - INFO - original_6dof = {'x': -40.6376, 'y': -175.1399, 'z': 589.6382, 'rx': 111.4361, 'ry': -72.2814, 'rz': -9.9513}
+05-26 18:13:13 - 1161 - INFO - no file(s) found.
+05-26 18:13:19 - 1161 - INFO - no file(s) found.
+05-26 18:13:29 - 1161 - INFO - no file(s) found.
+05-26 18:13:47 - 1161 - INFO - no file(s) found.
+05-26 18:14:03 - 1120 - INFO - 1 file(s) found : bb.txt.
+05-26 18:14:03 - 208 - INFO - recvData=-30001,{},MovL(pose={*list[dict_values([100.0, 200.0, 100.0, 30.0, 10.0, 40.0])]});
+05-26 18:14:03 - 1150 - WARNING - e6 :: 未知错误[-30001]。.
+
+05-26 18:14:03 - 1154 - INFO - 已移动 bb.txt 到 moved 子目录 bb.txt_20250526181403_robot_error
+05-26 18:14:23 - 1161 - INFO - no file(s) found.
+05-26 18:15:22 - 909 - INFO - e6 :: initialized.
+05-26 18:15:22 - 921 - INFO - e6 :: connected.
+
+05-26 18:15:22 - 930 - INFO - command=RobotMode()
+05-26 18:15:22 - 208 - INFO - recvData=0,{5},RobotMode();
+05-26 18:15:22 - 944 - INFO - e6 :: 使能且空闲.
+
+05-26 18:15:22 - 208 - INFO - recvData=0,{-40.6376,-175.1399,589.6382,111.4361,-72.2814,-9.9513},GetPose();
+05-26 18:15:22 - 1102 - INFO - original_6dof = {'x': -40.6376, 'y': -175.1399, 'z': 589.6382, 'rx': 111.4361, 'ry': -72.2814, 'rz': -9.9513}
+05-26 18:15:24 - 1161 - INFO - no file(s) found.
+05-26 18:15:30 - 1161 - INFO - no file(s) found.
+05-26 18:15:34 - 1120 - INFO - 1 file(s) found : bb.txt.
+05-26 18:15:34 - 208 - INFO - recvData=0,{2},MovL(pose={100.0,200.0,100.0,30.0,10.0,40.0});
+05-26 18:15:34 - 208 - INFO - recvData=0,{-40.6376,-175.1399,589.6382,111.4361,-72.2814,-9.9513},GetPose();
+05-26 18:15:34 - 1147 - INFO - move successs, current 6dof = {'x': -40.6376, 'y': -175.1399, 'z': 589.6382, 'rx': 111.4361, 'ry': -72.2814, 'rz': -9.9513}
+05-26 18:15:34 - 1154 - INFO - 已移动 bb.txt 到 moved 子目录 bb.txt_20250526181534_moved
+05-26 18:15:42 - 1161 - INFO - no file(s) found.
+05-26 18:16:00 - 1161 - INFO - no file(s) found.
+05-26 18:16:34 - 1161 - INFO - no file(s) found.
+05-26 18:16:50 - 909 - INFO - e6 :: initialized.
+05-26 18:16:50 - 921 - INFO - e6 :: connected.
+
+05-26 18:16:50 - 930 - INFO - command=RobotMode()
+05-26 18:16:50 - 208 - INFO - recvData=0,{9},RobotMode();
+05-26 18:16:50 - 208 - INFO - recvData=-2,{},GetPose();
+05-26 18:16:50 - 1104 - WARNING - e6 :: 机器人处于报警状态。清除报警后重试。.
+
+05-26 18:16:52 - 1161 - INFO - no file(s) found.
+05-26 18:16:58 - 1161 - INFO - no file(s) found.
+05-26 18:38:23 - 909 - INFO - e6 :: initialized.
+05-26 18:38:23 - 921 - INFO - e6 :: connected.
+
+05-26 18:38:23 - 930 - INFO - command=RobotMode()
+05-26 18:38:23 - 208 - INFO - recvData=0,{4},RobotMode();
+05-26 18:38:23 - 934 - WARNING - e6 :: 未使能(无抱闸松开).
+
+05-26 18:38:27 - 208 - INFO - recvData=0,{},EnableRobot();
+05-26 18:38:27 - 208 - INFO - recvData=0,{5},RobotMode();
+05-26 18:38:27 - 941 - INFO - e6 :: 使能且空闲.
+
+05-26 18:38:27 - 208 - INFO - recvData=0,{-40.5115,-175.1027,589.6625,111.2804,-72.2027,-9.6997},GetPose();
+05-26 18:38:27 - 1102 - INFO - original_6dof = {'x': -40.5115, 'y': -175.1027, 'z': 589.6625, 'rx': 111.2804, 'ry': -72.2027, 'rz': -9.6997}
+05-26 18:38:29 - 1161 - INFO - no file(s) found.
+05-26 18:41:34 - 909 - INFO - e6 :: initialized.
+05-26 18:41:34 - 921 - INFO - e6 :: connected.
+
+05-26 18:41:34 - 930 - INFO - command=RobotMode()
+05-26 18:41:34 - 208 - INFO - recvData=0,{5},RobotMode();
+05-26 18:41:34 - 944 - INFO - e6 :: 使能且空闲.
+
+05-26 18:41:34 - 208 - INFO - recvData=0,{-40.5115,-175.1027,589.6625,111.2804,-72.2027,-9.6997},GetPose();
+05-26 18:41:34 - 1102 - INFO - original_6dof = {'x': -40.5115, 'y': -175.1027, 'z': 589.6625, 'rx': 111.2804, 'ry': -72.2027, 'rz': -9.6997}
+05-26 18:41:36 - 1161 - INFO - no file(s) found.
+05-26 18:41:42 - 1161 - INFO - no file(s) found.
+05-26 18:41:52 - 1161 - INFO - no file(s) found.
+05-26 18:41:58 - 1120 - INFO - 1 file(s) found : 0526.txt.
+05-26 18:41:58 - 208 - INFO - recvData=0,{2},MovL(pose={-50.5115,-185.1027,500.6625,111.2804,-72.2027,-9.6997});
+05-26 18:41:58 - 208 - INFO - recvData=0,{-40.5115,-175.1028,589.6624,111.2804,-72.2027,-9.6997},GetPose();
+05-26 18:41:58 - 1147 - INFO - move successs, current 6dof = {'x': -40.5115, 'y': -175.1028, 'z': 589.6624, 'rx': 111.2804, 'ry': -72.2027, 'rz': -9.6997}
+05-26 18:41:58 - 1154 - INFO - 已移动 0526.txt 到 moved 子目录 0526.txt_20250526184158_moved
+05-26 18:42:12 - 1161 - INFO - no file(s) found.
+05-26 18:42:32 - 909 - INFO - e6 :: initialized.
+05-26 18:42:32 - 921 - INFO - e6 :: connected.
+
+05-26 18:42:32 - 930 - INFO - command=RobotMode()
+05-26 18:42:32 - 208 - INFO - recvData=0,{5},RobotMode();
+05-26 18:42:32 - 944 - INFO - e6 :: 使能且空闲.
+
+05-26 18:42:32 - 208 - INFO - recvData=0,{-50.5115,-185.1027,500.6625,111.2804,-72.2027,-9.6997},GetPose();
+05-26 18:42:32 - 1102 - INFO - original_6dof = {'x': -50.5115, 'y': -185.1027, 'z': 500.6625, 'rx': 111.2804, 'ry': -72.2027, 'rz': -9.6997}
+05-26 18:42:34 - 1161 - INFO - no file(s) found.
+05-26 18:42:40 - 1161 - INFO - no file(s) found.
+05-26 18:42:50 - 1161 - INFO - no file(s) found.
+05-26 18:43:08 - 1161 - INFO - no file(s) found.
+05-26 18:43:28 - 1120 - INFO - 1 file(s) found : p2.txt.
+05-26 18:43:28 - 208 - INFO - recvData=0,{3},MovL(pose={-40.5115,-175.1028,589.6624,111.2804,-72.2027,-9.6997});
+05-26 18:43:28 - 208 - INFO - recvData=0,{-50.5115,-185.1027,500.6626,111.2804,-72.2027,-9.6997},GetPose();
+05-26 18:43:28 - 1147 - INFO - move successs, current 6dof = {'x': -50.5115, 'y': -185.1027, 'z': 500.6626, 'rx': 111.2804, 'ry': -72.2027, 'rz': -9.6997}
+05-26 18:43:28 - 1154 - INFO - 已移动 p2.txt 到 moved 子目录 p2.txt_20250526184328_moved
+05-26 18:43:44 - 1161 - INFO - no file(s) found.
+05-26 18:44:14 - 1120 - INFO - 1 file(s) found : p1.txt.
+05-26 18:44:14 - 208 - INFO - recvData=0,{4},MovL(pose={-50.5115,-185.1027,500.6625,111.2804,-72.2027,-9.6997});
+05-26 18:44:14 - 208 - INFO - recvData=0,{-40.5115,-175.1028,589.6623,111.2804,-72.2027,-9.6997},GetPose();
+05-26 18:44:14 - 1147 - INFO - move successs, current 6dof = {'x': -40.5115, 'y': -175.1028, 'z': 589.6623, 'rx': 111.2804, 'ry': -72.2027, 'rz': -9.6997}
+05-26 18:44:14 - 1154 - INFO - 已移动 p1.txt 到 moved 子目录 p1.txt_20250526184414_moved
+05-26 18:44:32 - 1120 - INFO - 1 file(s) found : p2.txt.
+05-26 18:44:33 - 208 - INFO - recvData=0,{5},MovL(pose={-40.5115,-175.1028,589.6624,111.2804,-72.2027,-9.6997});
+05-26 18:44:33 - 208 - INFO - recvData=0,{-50.5115,-185.1027,500.6626,111.2804,-72.2027,-9.6997},GetPose();
+05-26 18:44:33 - 1147 - INFO - move successs, current 6dof = {'x': -50.5115, 'y': -185.1027, 'z': 500.6626, 'rx': 111.2804, 'ry': -72.2027, 'rz': -9.6997}
+05-26 18:44:33 - 1154 - INFO - 已移动 p2.txt 到 moved 子目录 p2.txt_20250526184433_moved
+05-26 18:44:55 - 1161 - INFO - no file(s) found.
+05-26 18:45:57 - 1161 - INFO - no file(s) found.
+05-26 18:46:59 - 1161 - INFO - no file(s) found.
+05-26 18:48:01 - 1161 - INFO - no file(s) found.
+05-26 18:49:03 - 1161 - INFO - no file(s) found.
+05-26 18:50:05 - 1161 - INFO - no file(s) found.
+05-26 18:51:07 - 1161 - INFO - no file(s) found.
+05-26 18:51:21 - 1120 - INFO - 1 file(s) found : p0.txt.
+05-26 18:51:21 - 208 - INFO - recvData=0,{6},MovL(pose={0.0,0.0,500.6626,111.2804,-72.2027,-9.6997});
+05-26 18:51:21 - 208 - INFO - recvData=0,{-40.5115,-175.1028,589.6624,111.2804,-72.2027,-9.6997},GetPose();
+05-26 18:51:21 - 1147 - INFO - move successs, current 6dof = {'x': -40.5115, 'y': -175.1028, 'z': 589.6624, 'rx': 111.2804, 'ry': -72.2027, 'rz': -9.6997}
+05-26 18:51:21 - 1154 - INFO - 已移动 p0.txt 到 moved 子目录 p0.txt_20250526185121_moved
+05-26 18:52:13 - 909 - INFO - e6 :: initialized.
+05-26 18:52:13 - 921 - INFO - e6 :: connected.
+
+05-26 18:52:13 - 930 - INFO - command=RobotMode()
+05-26 18:52:13 - 208 - INFO - recvData=0,{9},RobotMode();
+05-26 18:52:13 - 208 - INFO - recvData=-2,{},GetPose();
+05-26 18:52:13 - 1104 - WARNING - e6 :: 机器人处于报警状态。清除报警后重试。.
+
+05-26 18:52:15 - 1161 - INFO - no file(s) found.
+05-26 18:57:52 - 909 - INFO - e6 :: initialized.
+05-26 18:57:52 - 921 - INFO - e6 :: connected.
+
+05-26 18:57:52 - 930 - INFO - command=RobotMode()
+05-26 18:57:52 - 208 - INFO - recvData=Control Mode Is Not Tcp	
+05-26 19:31:56 - 909 - INFO - e6 :: initialized.
+05-26 19:32:27 - 909 - INFO - e6 :: initialized.
+05-26 19:32:27 - 921 - INFO - e6 :: connected.
+
+05-26 19:32:27 - 930 - INFO - command=RobotMode()
+05-26 19:32:27 - 208 - INFO - recvData=Control Mode Is Not Tcp	
+05-26 19:59:29 - 917 - INFO - e6 :: initialized.
+05-26 19:59:29 - 929 - INFO - e6 :: connected.
+
+05-26 19:59:29 - 938 - INFO - command=RobotMode()
+05-26 19:59:29 - 208 - INFO - recvData=Control Mode Is Not Tcp	
+05-26 19:59:29 - 208 - INFO - recvData=Control Mode Is Not Tcp	
+05-26 19:59:29 - 1119 - WARNING - e6 :: 命令执行失败。请重试。.
+
+05-26 19:59:31 - 1181 - INFO - no file(s) found.
+05-26 19:59:37 - 1181 - INFO - no file(s) found.
+05-26 20:01:37 - 917 - INFO - e6 :: initialized.
+05-26 20:01:37 - 929 - INFO - e6 :: connected.
+
+05-26 20:01:37 - 938 - INFO - command=RobotMode()
+05-26 20:01:37 - 208 - INFO - recvData=Control Mode Is Not Tcp	
+05-26 20:01:37 - 208 - INFO - recvData=Control Mode Is Not Tcp	
+05-26 20:01:37 - 208 - INFO - recvData=Control Mode Is Not Tcp	
+05-26 20:01:37 - 208 - INFO - recvData=Control Mode Is Not Tcp	
+05-26 20:01:37 - 1119 - WARNING - e6 :: 命令执行失败。请重试。.
+
+05-26 20:01:39 - 1181 - INFO - no file(s) found.
+05-26 20:01:45 - 1181 - INFO - no file(s) found.
+05-26 20:02:10 - 917 - INFO - e6 :: initialized.
+05-26 20:02:10 - 929 - INFO - e6 :: connected.
+
+05-26 20:02:10 - 938 - INFO - command=RobotMode()
+05-26 20:02:10 - 208 - INFO - recvData=Control Mode Is Not Tcp	
+05-26 20:02:10 - 940 - INFO - result=#{'error_id': -1, 'value': 'Control Mode Is Not Tcp\t', 'command': 'RobotMode()'}#
+05-26 20:02:10 - 208 - INFO - recvData=Control Mode Is Not Tcp	
+05-26 20:02:10 - 208 - INFO - recvData=Control Mode Is Not Tcp	
+05-26 20:02:10 - 208 - INFO - recvData=Control Mode Is Not Tcp	
+05-26 20:02:10 - 1119 - WARNING - e6 :: 命令执行失败。请重试。.
+
+05-26 20:02:12 - 1181 - INFO - no file(s) found.
+05-26 20:02:18 - 1181 - INFO - no file(s) found.
+05-26 20:02:28 - 1181 - INFO - no file(s) found.
+05-26 20:04:46 - 917 - INFO - e6 :: initialized.
+05-26 20:04:46 - 929 - INFO - e6 :: connected.
+
+05-26 20:04:46 - 938 - INFO - command=RobotMode()
+05-26 20:04:46 - 208 - INFO - recvData=Control Mode Is Not Tcp	
+05-26 20:04:46 - 940 - INFO - result=#{'error_id': -1, 'value': 'Control Mode Is Not Tcp\t', 'command': 'RobotMode()'}#
+05-26 20:04:46 - 208 - INFO - recvData=Control Mode Is Not Tcp	
+05-26 20:04:46 - 208 - INFO - recvData=Control Mode Is Not Tcp	
+05-26 20:04:46 - 961 - INFO - result['value']=#Control Mode Is Not Tcp	#, RobotMode.ENABLE=#5#
+05-26 20:04:46 - 208 - INFO - recvData=Control Mode Is Not Tcp	
+05-26 20:04:46 - 1119 - WARNING - e6 :: 命令执行失败。请重试。.
+
+05-26 20:04:48 - 1181 - INFO - no file(s) found.
+05-26 20:04:53 - 917 - INFO - e6 :: initialized.
+05-26 20:04:53 - 929 - INFO - e6 :: connected.
+
+05-26 20:04:53 - 938 - INFO - command=RobotMode()
+05-26 20:04:53 - 208 - INFO - recvData=Control Mode Is Not Tcp	
+05-26 20:04:53 - 940 - INFO - result=#{'error_id': -1, 'value': 'Control Mode Is Not Tcp\t', 'command': 'RobotMode()'}#
+05-26 20:04:53 - 208 - INFO - recvData=Control Mode Is Not Tcp	
+05-26 20:04:53 - 208 - INFO - recvData=Control Mode Is Not Tcp	
+05-26 20:04:53 - 961 - INFO - result['value']=#Control Mode Is Not Tcp	#, RobotMode.ENABLE=#5#
+05-26 20:04:53 - 208 - INFO - recvData=Control Mode Is Not Tcp	
+05-26 20:04:53 - 1119 - WARNING - e6 :: 命令执行失败。请重试。.
+
+05-26 20:04:55 - 1181 - INFO - no file(s) found.
+05-26 20:05:01 - 1181 - INFO - no file(s) found.
+05-26 20:05:11 - 1181 - INFO - no file(s) found.
+05-26 20:07:38 - 917 - INFO - e6 :: initialized.
+05-26 20:07:38 - 929 - INFO - e6 :: connected.
+
+05-26 20:07:38 - 938 - INFO - command=RobotMode()
+05-26 20:07:38 - 208 - INFO - recvData=Control Mode Is Not Tcp	
+05-26 20:07:38 - 940 - INFO - result=#{'error_id': -1, 'value': 'Control Mode Is Not Tcp\t', 'command': 'RobotMode()'}#
+05-26 20:07:38 - 208 - INFO - recvData=Control Mode Is Not Tcp	
+05-26 20:07:38 - 208 - INFO - recvData=Control Mode Is Not Tcp	
+05-26 20:07:38 - 961 - INFO - result['value']=#Control Mode Is Not Tcp	#, RobotMode.ENABLE=#5#
+05-26 20:07:38 - 208 - INFO - recvData=Control Mode Is Not Tcp	
+05-26 20:07:38 - 471 - INFO - result=#{'error_id': -1, 'value': 'Control Mode Is Not Tcp\t', 'command': 'GetPose()'}#
+05-26 20:07:38 - 1119 - WARNING - e6 :: 命令执行失败。请重试。.
+
+05-26 20:07:40 - 1181 - INFO - no file(s) found.
+05-26 20:07:46 - 1181 - INFO - no file(s) found.
+05-26 20:07:56 - 1181 - INFO - no file(s) found.
+05-26 20:08:55 - 917 - INFO - e6 :: initialized.
+05-26 20:08:55 - 929 - INFO - e6 :: connected.
+
+05-26 20:08:55 - 938 - INFO - command=RobotMode()
+05-26 20:08:55 - 208 - INFO - recvData=Control Mode Is Not Tcp	
+05-26 20:08:55 - 940 - INFO - result=#{'error_id': -1, 'value': 'Control Mode Is Not Tcp\t', 'command': 'RobotMode()'}#
+05-26 20:08:55 - 208 - INFO - recvData=Control Mode Is Not Tcp	
+05-26 20:08:55 - 944 - INFO - result={'error_id': -1, 'value': 'Control Mode Is Not Tcp\t', 'command': 'RequestControl()'}
+05-26 20:08:55 - 208 - INFO - recvData=Control Mode Is Not Tcp	
+05-26 20:08:55 - 962 - INFO - result['value']=#Control Mode Is Not Tcp	#, RobotMode.ENABLE=#5#
+05-26 20:08:55 - 208 - INFO - recvData=Control Mode Is Not Tcp	
+05-26 20:08:55 - 471 - INFO - result=#{'error_id': -1, 'value': 'Control Mode Is Not Tcp\t', 'command': 'GetPose()'}#
+05-26 20:08:55 - 1120 - WARNING - e6 :: 命令执行失败。请重试。.
+
+05-26 20:08:57 - 1182 - INFO - no file(s) found.
+05-26 20:09:03 - 1182 - INFO - no file(s) found.
+05-26 20:09:13 - 1182 - INFO - no file(s) found.
+05-26 20:09:31 - 1182 - INFO - no file(s) found.
+05-26 20:09:50 - 917 - INFO - e6 :: initialized.
+05-26 20:09:50 - 929 - INFO - e6 :: connected.
+
+05-26 20:09:50 - 938 - INFO - command=RobotMode()
+05-26 20:09:50 - 208 - INFO - recvData=Control Mode Is Not Tcp	
+05-26 20:09:50 - 940 - INFO - result=#{'error_id': -1, 'value': 'Control Mode Is Not Tcp\t', 'command': 'RobotMode()'}#
+05-26 20:09:50 - 942 - INFO - RequestControl()
+05-26 20:09:50 - 208 - INFO - recvData=Control Mode Is Not Tcp	
+05-26 20:09:50 - 945 - INFO - result={'error_id': -1, 'value': 'Control Mode Is Not Tcp\t', 'command': 'RequestControl()'}
+05-26 20:09:50 - 208 - INFO - recvData=Control Mode Is Not Tcp	
+05-26 20:09:50 - 963 - INFO - result['value']=#Control Mode Is Not Tcp	#, RobotMode.ENABLE=#5#
+05-26 20:09:50 - 208 - INFO - recvData=Control Mode Is Not Tcp	
+05-26 20:09:50 - 471 - INFO - result=#{'error_id': -1, 'value': 'Control Mode Is Not Tcp\t', 'command': 'GetPose()'}#
+05-26 20:09:50 - 1121 - WARNING - e6 :: 命令执行失败。请重试。.
+
+05-26 20:09:52 - 1183 - INFO - no file(s) found.
+05-26 20:09:58 - 1183 - INFO - no file(s) found.
+05-26 20:10:08 - 1183 - INFO - no file(s) found.
+05-26 20:10:26 - 1183 - INFO - no file(s) found.
+05-26 20:11:00 - 1183 - INFO - no file(s) found.
+05-26 20:12:06 - 1183 - INFO - no file(s) found.
+05-26 20:13:08 - 1183 - INFO - no file(s) found.
+05-26 20:14:11 - 1183 - INFO - no file(s) found.
+05-26 20:15:13 - 1183 - INFO - no file(s) found.
+05-26 20:16:15 - 1183 - INFO - no file(s) found.
+05-26 20:17:17 - 1183 - INFO - no file(s) found.
+05-26 20:18:19 - 1183 - INFO - no file(s) found.
+05-26 20:19:22 - 1183 - INFO - no file(s) found.
+05-26 20:20:24 - 1183 - INFO - no file(s) found.
+05-26 20:21:26 - 1183 - INFO - no file(s) found.
+05-26 20:22:28 - 1183 - INFO - no file(s) found.
+05-26 20:23:30 - 1183 - INFO - no file(s) found.
+05-26 20:24:33 - 1183 - INFO - no file(s) found.
+05-26 20:25:35 - 1183 - INFO - no file(s) found.
+05-26 20:26:37 - 1183 - INFO - no file(s) found.
+05-26 20:27:39 - 1183 - INFO - no file(s) found.
+05-26 20:28:41 - 1183 - INFO - no file(s) found.
+05-26 20:29:44 - 1183 - INFO - no file(s) found.
+05-26 20:30:46 - 1183 - INFO - no file(s) found.
+05-26 20:31:48 - 1183 - INFO - no file(s) found.
+05-26 20:32:50 - 1183 - INFO - no file(s) found.
+05-26 20:33:52 - 1183 - INFO - no file(s) found.
+05-26 20:34:54 - 1183 - INFO - no file(s) found.
+05-26 20:35:57 - 1183 - INFO - no file(s) found.
+05-26 20:36:59 - 1183 - INFO - no file(s) found.
+05-26 20:38:01 - 1183 - INFO - no file(s) found.
+05-26 20:39:03 - 1183 - INFO - no file(s) found.
+05-26 20:40:06 - 1183 - INFO - no file(s) found.
+05-26 20:41:08 - 1183 - INFO - no file(s) found.
+05-26 20:42:10 - 1183 - INFO - no file(s) found.
+05-26 20:43:12 - 1183 - INFO - no file(s) found.
+05-26 20:44:14 - 1183 - INFO - no file(s) found.
+05-26 20:45:17 - 1183 - INFO - no file(s) found.
+05-26 20:46:19 - 1183 - INFO - no file(s) found.
+05-26 20:47:23 - 1183 - INFO - no file(s) found.
+05-26 21:15:48 - 1183 - INFO - no file(s) found.
+05-26 21:36:48 - 1183 - INFO - no file(s) found.
+05-26 21:47:33 - 1183 - INFO - no file(s) found.
+05-26 22:48:10 - 1183 - INFO - no file(s) found.
+05-26 23:04:10 - 1183 - INFO - no file(s) found.
+05-26 23:20:18 - 1183 - INFO - no file(s) found.
+05-26 23:32:59 - 1183 - INFO - no file(s) found.
+05-26 23:52:50 - 1183 - INFO - no file(s) found.
+05-27 00:03:18 - 1183 - INFO - no file(s) found.
+05-27 00:13:46 - 1183 - INFO - no file(s) found.
+05-27 00:33:35 - 1183 - INFO - no file(s) found.
+05-27 00:44:04 - 1183 - INFO - no file(s) found.
+05-27 00:54:29 - 1183 - INFO - no file(s) found.
+05-27 01:05:36 - 1183 - INFO - no file(s) found.
+05-27 01:25:33 - 1183 - INFO - no file(s) found.
+05-27 01:35:59 - 1183 - INFO - no file(s) found.
+05-27 01:46:25 - 1183 - INFO - no file(s) found.
+05-27 06:53:53 - 1183 - INFO - no file(s) found.
+05-27 07:43:01 - 1183 - INFO - no file(s) found.
+05-27 07:44:18 - 1183 - INFO - no file(s) found.
+05-27 07:45:35 - 1183 - INFO - no file(s) found.
+05-27 07:46:38 - 1183 - INFO - no file(s) found.
+05-27 07:47:40 - 1183 - INFO - no file(s) found.
+05-27 07:48:42 - 1183 - INFO - no file(s) found.
+05-27 07:49:44 - 1183 - INFO - no file(s) found.
+05-27 07:50:46 - 1183 - INFO - no file(s) found.
+05-27 07:51:48 - 1183 - INFO - no file(s) found.
+05-27 07:52:50 - 1183 - INFO - no file(s) found.
+05-27 07:53:52 - 1183 - INFO - no file(s) found.
+05-27 07:54:55 - 1183 - INFO - no file(s) found.
+05-27 07:55:57 - 1183 - INFO - no file(s) found.
+05-27 07:56:59 - 1183 - INFO - no file(s) found.
+05-27 07:58:01 - 1183 - INFO - no file(s) found.
+05-27 07:59:03 - 1183 - INFO - no file(s) found.
+05-27 08:00:05 - 1183 - INFO - no file(s) found.
+05-27 08:01:07 - 1183 - INFO - no file(s) found.
+05-27 08:02:10 - 1183 - INFO - no file(s) found.
+05-27 08:03:12 - 1183 - INFO - no file(s) found.
+05-27 08:04:14 - 1183 - INFO - no file(s) found.
+05-27 08:05:16 - 1183 - INFO - no file(s) found.
+05-27 08:06:18 - 1183 - INFO - no file(s) found.
+05-27 08:07:20 - 1183 - INFO - no file(s) found.
+05-27 08:08:22 - 1183 - INFO - no file(s) found.
